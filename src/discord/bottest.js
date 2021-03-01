@@ -94,7 +94,7 @@ client.on('message', async message => {
           })
         }
       })
-    } else if (args.remainingArg.search(emojiRE) != null) {
+    } else if ((args.remainingArg != null) && (args.remainingArg.search(emojiRE) != null)) {
       const emojiMatch = args.remainingArg.match(emojiRE)
       if (emojiMatch != null) {
         const emoji = emojiMatch[0].split(emojiSplitRE)
