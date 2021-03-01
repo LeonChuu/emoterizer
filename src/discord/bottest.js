@@ -12,7 +12,9 @@ const client = new Discord.Client()
 
 const prefix = '.yv'
 const re = /\s+/
-
+const emojiRE = /^<.*>$/
+const emojiSplitRE = /:|>/
+const discordEmojiURL = 'https://cdn.discordapp.com/emojis/'
 const transformation = new Transformation()
 
 // TODO get values from command
@@ -70,6 +72,7 @@ const commands = {
 client.login(token)
 client.on('message', async message => {
   const args = parseInput(message.content)
+  console.log(args)
   if (args.prefixed) {
     const command = args.command
     console.log(command)
@@ -91,6 +94,29 @@ client.on('message', async message => {
           })
         }
       })
+    } else if (args.remainingArg.search(emojiRE) != null) {
+      const emojiMatch = args.remainingArg.match(emojiRE)
+      if (emojiMatch != null) {
+        const emoji = emojiMatch[0].split(emojiSplitRE)
+        console.log(emoji)
+        const emojiNumber = emoji[2]
+        const emojiName = emoji[1]
+        console.log(discordEmojiURL + emojiNumber + '.png')
+        const image = transformation.resizeDown(await Jimp.read(discordEmojiURL + emojiNumber + '.png'))
+        const transformedImage = await commands[command](message, image, args)
+        const gif = await transformation.generateGif(transformedImage)
+
+        // TODO change the attachment name to something better
+        message.channel.send({
+          files: [{
+            attachment: gif.buffer,
+            name: command + emojiName + '.gif'
+          }]
+        })
+      } else {
+        message.channel.send('Only custom emotes are allowed.')
+      }
+      console.log(args.remainingArg)
     } else {
       commands[command](message)
     }
@@ -118,7 +144,7 @@ function parseInput (inputLine) {
   splitString.splice(0, 2)
   // last remaining argument is stored, since loop won't reach it
   if ((splitString.length % 2) === 1) {
-    content.remainingArg = splitString[-1]
+    content.remainingArg = splitString.pop()
   }
 
   // storing arguments in keyValue pairs
