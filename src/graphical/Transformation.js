@@ -1,6 +1,6 @@
 import Jimp from 'jimp'
 import { GifFrame, BitmapImage, GifUtil, GifCodec } from 'gifwrap'
-import { zoomImageDefaultZoom, rollImageDefaultSpeed, genkiImageDefaultSpeed, imageDefaultInterval, defaultHeight, defaultWidth } from './utils/defaultsAndConstants.js'
+import { zoomImageDefaultZoom, rollImageDefaultSpeed, genkiImageDefaultSpeed, imageDefaultInterval, defaultHeight, defaultWidth } from '../utils/defaultsAndConstants.js'
 export class Transformation {
   constructor (image, defaultValue) {
     defaultValue == null ? this.value = 50 : this.value = defaultValue

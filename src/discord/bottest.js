@@ -1,4 +1,4 @@
-import Transformation from './Transformation.js'
+import Transformation from '../graphical/Transformation.js'
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
 const Discord = require('discord.js')

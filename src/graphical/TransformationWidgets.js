@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { zoomImageDefaultZoom, rollImageDefaultSpeed, genkiImageDefaultSpeed, imageDefaultInterval, defaultWidth } from './utils/defaultsAndConstants.js'
+import { zoomImageDefaultZoom, rollImageDefaultSpeed, genkiImageDefaultSpeed, imageDefaultInterval, defaultWidth } from '../utils/defaultsAndConstants.js'
 export class TransformationSelector extends React.Component {
   constructor () {
     super()

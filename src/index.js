@@ -1,11 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
-import App from './App'
-import reportWebVitals from './reportWebVitals'
+import './frontend/css/index.css'
+import reportWebVitals from './utils/reportWebVitals'
 import Jimp from 'jimp'
-import { Transformation } from './Transformation.js'
-import { TransformationDisplay } from './TransformationWidgets'
+import { Transformation } from './graphical/Transformation.js'
+import { TransformationDisplay } from './graphical/TransformationWidgets.js'
 import { defaultWidth, defaultHeight } from './utils/defaultsAndConstants'
 // TODO colocar outra classe pra fazer a transformacao antes e rerenderizr
 
