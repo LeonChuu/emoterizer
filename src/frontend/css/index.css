@@ -11,3 +11,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.image-display {
+  font-size: 16px;
+}
+
+.emoji-jumboable {
+    width: 3em;
+    height: 3em;
+    min-height: 3em;
+}
+.emoji {
+    width: 1.375em;
+    height: 1.375em;
+}
+.image {
+  width: 5em;
+  height: 5em;
+}
