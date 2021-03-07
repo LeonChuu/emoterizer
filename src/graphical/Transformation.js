@@ -2,22 +2,22 @@ import Jimp from 'jimp'
 import { GifFrame, BitmapImage, GifUtil, GifCodec } from 'gifwrap'
 import { zoomImageDefaultZoom, rollImageDefaultSpeed, genkiImageDefaultSpeed, imageDefaultInterval, defaultHeight, defaultWidth } from '../utils/defaultsAndConstants.js'
 export class Transformation {
-  constructor (image, defaultValue) {
-    defaultValue == null ? this.value = 50 : this.value = defaultValue
-    this.originalImage = image
-    this.transformMap = {
-      flipVertical: (image) => this.flipImage(image, { vertical: true }),
-      flipHorizontal: (image) => this.flipImage(image, { horizontal: true }),
+  static transform (transformation, image, value) {
+    const transformMap = {
+      flipVertical: (image) => Transformation.flipImage(image, { vertical: true }),
+      flipHorizontal: (image) => Transformation.flipImage(image, { horizontal: true }),
       grayscale: (image) => image.grayscale(),
-      rotate: (image, value) => this.rotateImage(image, value),
-      spiral: (image, value) => this.spiralImage(image, value),
-      genki: (image, value) => this.genkiImage(image, value),
-      zoom: (image, value) => this.zoomImage(image, value),
-      roll: (image, value) => this.rollImage(image, value)
+      rotate: (image, value) => Transformation.rotateImage(image, value),
+      spiral: (image, value) => Transformation.spiralImage(image, value),
+      genki: (image, value) => Transformation.genkiImage(image, value),
+      zoom: (image, value) => Transformation.zoomImage(image, value),
+      roll: (image, value) => Transformation.rollImage(image, value),
+      spin: (image, value) => Transformation.rotateImage(image, value)
     }
+    return transformMap[transformation](image, value)
   }
 
-  async createGifBlob (frameList) {
+  static async createGifBlob (frameList) {
     const codec = new GifCodec()
     console.log('qtizing')
     GifUtil.quantizeDekker(frameList)
@@ -26,11 +26,11 @@ export class Transformation {
     return window.URL.createObjectURL(blob)
   }
 
-  mod (n, m) {
+  static mod (n, m) {
     return ((n % m) + m) % m
   }
 
-  async flipImage (image, values) {
+  static async flipImage (image, values) {
     const horizontal = values.horizontal || false
     const vertical = values.vertical || false
     const frameList = []
@@ -41,7 +41,7 @@ export class Transformation {
     return frameList
   }
 
-  async genkiImage (image, values) {
+  static async genkiImage (image, values) {
     const frameList = []
     const interval = values.interval || imageDefaultInterval
     const shift = values.speed || genkiImageDefaultSpeed
@@ -56,7 +56,7 @@ export class Transformation {
     for (let i = 0; Math.abs(i) < newWidth; i += shift) {
       const newImage = GifUtil.copyAsJimp(Jimp, original)
         .scan(0, 0, newWidth, height, function (x, y, idx) {
-          const rgbaArray = Object.values(Jimp.intToRGBA(originalJimp.getPixelColor(Transformation.prototype.mod((x - i), newWidth), y)))
+          const rgbaArray = Object.values(Jimp.intToRGBA(originalJimp.getPixelColor(Transformation.mod((x - i), newWidth), y)))
           // console.log([this.bitmap.data[0], Object.values(Jimp.intToRGBA(newImage.getPixelColor((x + shift) % image.bitmap.width, y)))[0]])
           for (let j = 0; j < 4; j++) {
             this.bitmap.data[idx + j] = rgbaArray[j]
@@ -68,28 +68,29 @@ export class Transformation {
     return frameList
   }
 
-  async rollImage (image, values) {
-    const rotationTime = values.rotationTime || 50
-    const step = 90 * (rotationTime / 100) || 2
+  static async rollImage (image, values) {
+    const minRotationAngle = 90
+    const rotationSpeed = values.rotationSpeed || 50
     const interval = values.interval || imageDefaultInterval
     const shift = values.speed || rollImageDefaultSpeed
-
+    const step = minRotationAngle - (minRotationAngle * (rotationSpeed / 100)) || 2
     const width = image.bitmap.width
     const newWidth = image.bitmap.width + interval
     const height = image.bitmap.height
     const frameList = []
     const rotationLimit = 2280
+    const rotation = 360
 
     // const original = new GifFrame((new BitmapImage(image.bitmap)).reframe(0, 0, newWidth, height, 0x00000000))
     // const originalJimp = GifUtil.copyAsJimp(Jimp, original)
 
-    for (let i = 0, j = 0; (Math.abs(i) < newWidth) && (Math.abs(j) < rotationLimit); i += shift, j += step) {
+    for (let i = 0, j = 0; (Math.abs(i) < newWidth) && (Math.abs(j) < rotationLimit); i += shift, j += rotation / step) {
       const original = GifUtil.copyAsJimp(Jimp, image.bitmap).rotate(j, false)
       const originalResized = new GifFrame((new BitmapImage(original.bitmap)).reframe(0, 0, newWidth, height, 0x00000000))
       const newImageAux = GifUtil.copyAsJimp(Jimp, originalResized)
       const newImage = GifUtil.copyAsJimp(Jimp, originalResized)
       newImage.scan(0, 0, newWidth, height, function (x, y, idx) {
-        const rgbaArray = Object.values(Jimp.intToRGBA(newImageAux.getPixelColor(Transformation.prototype.mod((x - i), newWidth), y)))
+        const rgbaArray = Object.values(Jimp.intToRGBA(newImageAux.getPixelColor(Transformation.mod((x - i), newWidth), y)))
         // console.log([this.bitmap.data[0], Object.values(Jimp.intToRGBA(newImage.getPixelColor((x + shift) % image.bitmap.width, y)))[0]])
         for (let j = 0; j < 4; j++) {
           this.bitmap.data[idx + j] = rgbaArray[j]
@@ -103,11 +104,12 @@ export class Transformation {
     // return btoa(String.fromCharCode.apply(null, gif.buffer))
   }
 
-  async rotateImage (image, values) {
-    const rotationTime = values.rotationTime || 50
-    const step = 90 * (rotationTime / 100) || 2
-    const frameList = []
+  static async rotateImage (image, values) {
     const rotationLimit = 360
+    const minRotationAngle = 90
+    const rotationSpeed = values.rotationSpeed || 50
+    const step = minRotationAngle - (minRotationAngle * (rotationSpeed / 100)) || 2
+    const frameList = []
     const original = new GifFrame(new BitmapImage(image.bitmap))
     for (let i = 0; Math.abs(i) < rotationLimit; i += rotationLimit / step) {
       image = GifUtil.copyAsJimp(Jimp, original)
@@ -121,9 +123,9 @@ export class Transformation {
     // return btoa(String.fromCharCode.apply(null, gif.buffer))
   }
 
-  async spiralImage (image, values) {
-    const rotationTime = parseInt(values.rotationTime) || 50
-    const step = 90 * (rotationTime / 100) || 2
+  static async spiralImage (image, values) {
+    const rotationSpeed = parseInt(values.rotationSpeed) || 50
+    const step = 90 * (rotationSpeed / 100) || 2
     const zoom = parseFloat(values.zoom) || zoomImageDefaultZoom
     const width = image.bitmap.width
     const height = image.bitmap.height
@@ -147,7 +149,7 @@ export class Transformation {
     // return btoa(String.fromCharCode.apply(null, gif.buffer))
   }
 
-  async zoomImage (image, values) {
+  static async zoomImage (image, values) {
     let reframedImage
     console.log(values)
     const zoom = values.zoom || zoomImageDefaultZoom
@@ -169,29 +171,26 @@ export class Transformation {
     // return btoa(String.fromCharCode.apply(null, gif.buffer))
   }
 
-  async updateImage (transformationType, values) {
-    if (this.originalImage == null) {
+  static async updateImage (image, transformationType, values) {
+    if (image == null) {
       return
     }
-    const image = this.originalImage
     let newImage = null
     console.log(values)
     if (transformationType != null) {
-      newImage = this.createGifBlob(await this.transformMap[transformationType](image, values))
-      // this.setState({ image: await newImage }, () => console.log(this.state))
-      // this.setState({ image: await newImage })
+      newImage = Transformation.createGifBlob(await Transformation.transform(transformationType, image, values))
       return newImage
     }
-    // this.setState({image: await image.getBase64Async('image/gif') }, () => console.log(this.state))
+    // Transformation.setState({image: await image.getBase64Async('image/gif') }, () => console.log(Transformation.state))
   }
 
-  generateGif (frameList) {
+  static generateGif (frameList) {
     const codec = new GifCodec()
     GifUtil.quantizeDekker(frameList)
     return codec.encodeGif(frameList)
   }
 
-  resizeDown (jimpImage) {
+  static resizeDown (jimpImage) {
     jimpImage.resize(defaultHeight, defaultWidth)
     return jimpImage
   }

@@ -5,7 +5,6 @@ const Discord = require('discord.js')
 const fs = require('fs')
 // const got = require('got')
 const Jimp = require('jimp')
-//const Transformation = require('./Transformation.mjs')
 const token = process.env.TOKEN
 
 const client = new Discord.Client()
@@ -15,7 +14,6 @@ const re = /\s+/
 const emojiRE = /^<.*>$/
 const emojiSplitRE = /:|>/
 const discordEmojiURL = 'https://cdn.discordapp.com/emojis/'
-const transformation = new Transformation()
 
 // TODO get values from command
 const values = {}
@@ -44,28 +42,28 @@ const commands = {
     message.channel.send(text)
   },
   fliphorizontal: async (message, image) => {
-    return transformation.transformMap.flipHorizontal(image)
+    return Transformation.transform('flipHorizontal', image)
   },
   flipvertical: async (message, image) => {
-    return transformation.transformMap.flipVertical(image)
+    return Transformation.transform('flipVertical', image)
   },
-  grayscale: async (message, image) => {
-    return transformation.transformMap.grayscale(image, values)
+  grayscale: async (message, image, values) => {
+    return Transformation.transform('grayscale', image, values)
   },
-  genki: async (message, image) => {
-    return transformation.transformMap.genki(image, values)
+  genki: async (message, image, values) => {
+    return Transformation.transform('genki', image, values)
   },
-  roll: async (message, image) => {
-    return transformation.transformMap.roll(image, values)
+  roll: async (message, image, values) => {
+    return Transformation.transform('roll', image, values)
   },
-  spin: async (message, image) => {
-    return transformation.transformMap.rotate(image, values)
+  spin: async (message, image, values) => {
+    return Transformation.transform('rotate', image, values)
   },
   spiral: async (message, image, values) => {
-    return transformation.transformMap.spiral(image, values)
+    return Transformation.transform('spiral', image, values)
   },
-  zoom: async (message, image) => {
-    return transformation.transformMap.zoom(image, values)
+  zoom: async (message, image, values) => {
+    return Transformation.transform('zoom', image, values)
   }
 }
 
@@ -81,9 +79,9 @@ client.on('message', async message => {
       message.attachments.forEach(async attachment => {
         if (attachment.height != null) {
           console.log(args)
-          const image = transformation.resizeDown(await Jimp.read(attachment.proxyURL))
+          const image = Transformation.resizeDown(await Jimp.read(attachment.proxyURL))
           const transformedImage = await commands[command](message, image, args)
-          const gif = await transformation.generateGif(transformedImage)
+          const gif = await Transformation.generateGif(transformedImage)
 
           // TODO change the attachment name to something better
           message.channel.send({
@@ -102,9 +100,9 @@ client.on('message', async message => {
         const emojiNumber = emoji[2]
         const emojiName = emoji[1]
         console.log(discordEmojiURL + emojiNumber + '.png')
-        const image = transformation.resizeDown(await Jimp.read(discordEmojiURL + emojiNumber + '.png'))
+        const image = Transformation.resizeDown(await Jimp.read(discordEmojiURL + emojiNumber + '.png'))
         const transformedImage = await commands[command](message, image, args)
-        const gif = await transformation.generateGif(transformedImage)
+        const gif = await Transformation.generateGif(transformedImage)
 
         // TODO change the attachment name to something better
         message.channel.send({

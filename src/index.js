@@ -4,7 +4,7 @@ import './frontend/css/index.css'
 import reportWebVitals from './utils/reportWebVitals'
 import Jimp from 'jimp'
 import { Transformation } from './graphical/Transformation.js'
-import { TransformationDisplay } from './graphical/TransformationWidgets.js'
+import { TransformationDisplay } from './frontend/TransformationWidgets.js'
 import { defaultWidth, defaultHeight } from './utils/defaultsAndConstants'
 // TODO colocar outra classe pra fazer a transformacao antes e rerenderizr
 
@@ -47,7 +47,6 @@ class Page extends React.Component {
     const parameterObj = {}
     parameterObj[parameter] = parseFloat(value)
     const values = Object.assign({}, this.state.values, parameterObj)
-    // this.setState({ values: values, image: await this.transformation.updateImage(this.state.transformationType, values) })
     this.setState({ values: values })
   }
 
@@ -70,8 +69,11 @@ class Page extends React.Component {
 
   async handleRadioChange (transformationType) {
     console.log(this.state)
-    this.transformation = new Transformation(this.state.originalImage, this.state.values)
-    this.setState({ transformationType: transformationType, image: await this.transformation.updateImage(transformationType, this.state.values) })
+    this.transformation = new Transformation()
+    this.setState({
+      transformationType: transformationType,
+      image: await Transformation.updateImage(this.state.originalImage, transformationType, this.state.values)
+    })
   }
 
   async handleSelectorChange (transformationType) {
@@ -92,10 +94,6 @@ class Page extends React.Component {
     )
   }
 }
-/**
-        <ImageDisplay image={this.state.image} />
-        <RangeValueSelector onValueChange={this.handleValueChange} />
- */
 // ========================================
 
 ReactDOM.render(
