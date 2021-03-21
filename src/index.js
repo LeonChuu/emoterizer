@@ -53,31 +53,36 @@ class Page extends React.Component {
   async handleInputChange (image, resize) {
     const resizeFlag = resize || true
     console.log(image)
-    let JimpImage
+    let jimpImage, imageURL
     try {
-      JimpImage = await Jimp.read(URL.createObjectURL(image))
+      imageURL = URL.createObjectURL(image)
+      jimpImage = await Jimp.read(imageURL)
     } catch (e) {
       console.log(e)
       return
     }
 
     if (resizeFlag) {
-      JimpImage.resize(defaultHeight, defaultWidth)
+      jimpImage.resize(defaultHeight, defaultWidth)
     }
-    this.setState({ originalImage: JimpImage })
+    this.setState({ originalImage: jimpImage, originalImageURL: imageURL })
   }
 
   async handleRadioChange (transformationType) {
     console.log(this.state)
-    this.transformation = new Transformation()
+    let targetImage
+    if (transformationType === 'speed') {
+      targetImage = Buffer.from(await (await (await window.fetch(this.state.originalImageURL)).blob()).arrayBuffer())
+    } else {
+      targetImage = this.state.originalImage
+    }
     this.setState({
       transformationType: transformationType,
-      image: await Transformation.updateImage(this.state.originalImage, transformationType, this.state.values)
+      image: await Transformation.updateImage(targetImage, transformationType, this.state.values)
     })
   }
 
   async handleSelectorChange (transformationType) {
-    // this.transformation = new Transformation(this.state.originalImage, 50)
     this.setState({ transformationType: transformationType })
   }
 

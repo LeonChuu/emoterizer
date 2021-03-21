@@ -1,5 +1,6 @@
 import Transformation from '../graphical/Transformation.js'
 import { createRequire } from 'module'
+import got from 'got'
 const require = createRequire(import.meta.url)
 const Discord = require('discord.js')
 const fs = require('fs')
@@ -42,28 +43,31 @@ const commands = {
     message.channel.send(text)
   },
   fliphorizontal: async (message, image) => {
-    return Transformation.transform('flipHorizontal', image)
+    return Transformation.transform(image, 'flipHorizontal')
   },
   flipvertical: async (message, image) => {
-    return Transformation.transform('flipVertical', image)
+    return Transformation.transform(image, 'flipVertical')
   },
   grayscale: async (message, image, values) => {
-    return Transformation.transform('grayscale', image, values)
+    return Transformation.transform(image, 'grayscale', values)
   },
   genki: async (message, image, values) => {
-    return Transformation.transform('genki', image, values)
+    return Transformation.transform(image, 'genki', values)
   },
   roll: async (message, image, values) => {
-    return Transformation.transform('roll', image, values)
+    return Transformation.transform(image, 'roll', values)
+  },
+  speed: async (message, image, values) => {
+    return Transformation.transform(image, 'speed', values)
   },
   spin: async (message, image, values) => {
-    return Transformation.transform('rotate', image, values)
+    return Transformation.transform(image, 'spin', values)
   },
   spiral: async (message, image, values) => {
-    return Transformation.transform('spiral', image, values)
+    return Transformation.transform(image, 'spiral', values)
   },
   zoom: async (message, image, values) => {
-    return Transformation.transform('zoom', image, values)
+    return Transformation.transform(image, 'zoom', values)
   }
 }
 
@@ -79,15 +83,22 @@ client.on('message', async message => {
       message.attachments.forEach(async attachment => {
         if (attachment.height != null) {
           console.log(args)
-          const image = Transformation.resizeDown(await Jimp.read(attachment.proxyURL))
+          const emojiURL = attachment.proxyURL
+          let image
+          if (command !== 'speed') {
+            image = Transformation.resizeDown(await Jimp.read(emojiURL))
+          } else {
+            image = Buffer.from((await got(emojiURL)).rawBody.buffer)
+            console.log(image)
+          }
           const transformedImage = await commands[command](message, image, args)
           const gif = await Transformation.generateGif(transformedImage)
-
+          const emojiName = attachment.name
           // TODO change the attachment name to something better
           message.channel.send({
             files: [{
               attachment: gif.buffer,
-              name: command + attachment.name + '.gif'
+              name: command + emojiName + '.gif'
             }]
           })
         }
@@ -95,22 +106,27 @@ client.on('message', async message => {
     } else if ((args.remainingArg != null) && (args.remainingArg.search(emojiRE) != null)) {
       const emojiMatch = args.remainingArg.match(emojiRE)
       if (emojiMatch != null) {
-        const emoji = emojiMatch[0].split(emojiSplitRE)
-        console.log(emoji)
-        const emojiNumber = emoji[2]
-        const emojiName = emoji[1]
-        console.log(discordEmojiURL + emojiNumber + '.png')
-        const image = Transformation.resizeDown(await Jimp.read(discordEmojiURL + emojiNumber + '.png'))
-        const transformedImage = await commands[command](message, image, args)
-        const gif = await Transformation.generateGif(transformedImage)
+        if (command === 'speed') {
+          message.channel.send('Send the emoji in an attachment, inline not available for now.')
+        } else {
+          const emoji = emojiMatch[0].split(emojiSplitRE)
+          console.log(emoji)
+          const emojiNumber = emoji[2]
+          const emojiName = emoji[1]
+          console.log(discordEmojiURL + emojiNumber + '.png')
+          const emojiURL = discordEmojiURL + emojiNumber + '.png'
+          const image = Transformation.resizeDown(await Jimp.read(emojiURL))
+          const transformedImage = await commands[command](message, image, args)
+          const gif = await Transformation.generateGif(transformedImage)
 
-        // TODO change the attachment name to something better
-        message.channel.send({
-          files: [{
-            attachment: gif.buffer,
-            name: command + emojiName + '.gif'
-          }]
-        })
+          // TODO change the attachment name to something better
+          message.channel.send({
+            files: [{
+              attachment: gif.buffer,
+              name: command + emojiName + '.gif'
+            }]
+          })
+        }
       } else {
         message.channel.send('Only custom emotes are allowed.')
       }
