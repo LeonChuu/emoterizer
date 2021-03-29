@@ -7,15 +7,17 @@
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.5.0",
+    "bootstrap": "^4.6.0",
     "discord.js": "^12.5.1",
     "gifwrap": "^0.9.2",
+    "got": "11.8.2",
     "jimp": "^0.16.1",
     "react": "^17.0.1",
+    "react-bootstrap": "^1.5.2",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
     "standard": "^16.0.3",
-    "web-vitals": "^0.2.4",
-    "got": "11.8.2"
+    "web-vitals": "^0.2.4"
   },
   "scripts": {
     "start": "react-scripts start",

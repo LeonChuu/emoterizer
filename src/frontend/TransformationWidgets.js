@@ -1,5 +1,6 @@
 
 import React from 'react'
+import Card from 'react-bootstrap/Card'
 import { zoomImageDefaultZoom, rollImageDefaultSpeed, genkiImageDefaultSpeed, imageDefaultInterval, defaultWidth } from '../utils/defaultsAndConstants.js'
 export class TransformationSelector extends React.Component {
   constructor () {
@@ -46,13 +47,25 @@ export class TransformationSelector extends React.Component {
 class ImageDisplay extends React.Component {
   render () {
     return (
-      <div class='image-display'>
-        <img src={this.props.image} alt='full' />
-        <br />
-        <img src={this.props.image} class='emoji-jumboable' alt='emoji' />
-        <br />
-        <img src={this.props.image} class='emoji' alt='inlined emoji' />
-      </div>
+      <Card>
+        <div class='image-display row align-items-end'>
+          <div class='col-4'>
+            Full Size
+            <br />
+            <img src={this.props.image} alt='full' />
+          </div>
+          <div class='col-4'>
+            Standalone emoji size
+            <br />
+            <img src={this.props.image} class='emoji-jumboable' alt='emoji' />
+          </div>
+          <div class='col-4'>
+            <span>Inlined emoji size</span>
+            <br />
+            <img src={this.props.image} class='emoji' alt='inlined emoji' />
+          </div>
+        </div>
+      </Card>
     )
   }
 }
@@ -169,7 +182,9 @@ export class TransformationDisplay extends React.Component {
     return (
       <div>
         {selector}
-        {displayAndImage}
+        <Card>
+          {displayAndImage}
+        </Card>
       </div>
     )
   }

@@ -1,11 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './frontend/css/index.css'
 import reportWebVitals from './utils/reportWebVitals'
 import Jimp from 'jimp'
 import { Transformation } from './graphical/Transformation.js'
 import { TransformationDisplay } from './frontend/TransformationWidgets.js'
 import { defaultWidth, defaultHeight } from './utils/defaultsAndConstants'
+
+import Container from 'react-bootstrap/Container'
 // TODO colocar outra classe pra fazer a transformacao antes e rerenderizr
 
 class ImageInput extends React.Component {
@@ -88,14 +91,16 @@ class Page extends React.Component {
 
   render () {
     return (
-      <div id='page'>
-        <ImageInput onInputChange={this.handleInputChange} />
-        <TransformationDisplay
-          onRadioChange={this.handleRadioChange} image={this.state.image}
-          onValueChange={this.handleValueChange} transformationType={this.state.transformationType}
-          onSelectorChange={this.handleSelectorChange}
-        />
-      </div>
+      <Container>
+        <div id='page'>
+          <ImageInput onInputChange={this.handleInputChange} />
+          <TransformationDisplay
+            onRadioChange={this.handleRadioChange} image={this.state.image}
+            onValueChange={this.handleValueChange} transformationType={this.state.transformationType}
+            onSelectorChange={this.handleSelectorChange}
+          />
+        </div>
+      </Container>
     )
   }
 }
