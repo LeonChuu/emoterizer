@@ -27,7 +27,7 @@ export class Transformation {
     }
     const gif = await codec.encodeGif(frameList, { loops: 0 })
     const blob = new window.Blob([gif.buffer], { type: 'image/gif' })
-    return window.URL.createObjectURL(blob)
+    return blob
   }
 
   static mod (n, m) {
@@ -189,16 +189,31 @@ export class Transformation {
     if (image == null) {
       return
     }
-    let newImage = null
+    let newImage = null;
     console.log(values)
     if (transformationType != null) {
+      const newFrameList = await Transformation.transform(image, transformationType, values)
       if (transformationType === 'speed') {
-        newImage = Transformation.createGifBlob(await Transformation.transform(image, transformationType, values), { quantization: 'none' })
+        newImage = await Transformation.createGifBlob(newFrameList, { quantization: 'none' })
       } else {
-        newImage = Transformation.createGifBlob(await Transformation.transform(image, transformationType, values))
+        newImage = await Transformation.createGifBlob(newFrameList)
       }
-      return newImage
+      const output = {
+        image: await window.URL.createObjectURL(newImage),
+        frameNumber: newFrameList.length,
+        size: newImage.size
+      }
+      return output
     }
+  }
+
+  static calculateGifSize (frameList) {
+    const length = frameList.length
+    if (length === 0) {
+      return 0
+    }
+    console.log(frameList[0])
+    return 4 * frameList[0].bitmap.width * frameList[0].bitmap.height * length
   }
 
   static generateGif (frameList) {

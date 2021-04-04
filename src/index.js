@@ -42,7 +42,8 @@ class Page extends React.Component {
     this.state = {
       originalImage: null,
       transformation: null,
-      values: {}
+      values: {},
+      image: 'static/X.png'
     }
   }
 
@@ -81,7 +82,7 @@ class Page extends React.Component {
     }
     this.setState({
       transformationType: transformationType,
-      image: await Transformation.updateImage(targetImage, transformationType, this.state.values)
+      ...await Transformation.updateImage(targetImage, transformationType, this.state.values)
     })
   }
 
@@ -97,7 +98,8 @@ class Page extends React.Component {
           <TransformationDisplay
             onRadioChange={this.handleRadioChange} image={this.state.image}
             onValueChange={this.handleValueChange} transformationType={this.state.transformationType}
-            onSelectorChange={this.handleSelectorChange}
+            onSelectorChange={this.handleSelectorChange} frameNumber={this.state.frameNumber}
+            size={this.state.size}
           />
         </div>
       </Container>

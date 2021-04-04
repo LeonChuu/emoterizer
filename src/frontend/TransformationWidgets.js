@@ -111,7 +111,8 @@ class RangeValueSelector extends React.PureComponent {
     const min = this.props.min || 1
     const max = this.props.max || 100
     return (
-      <div id='selector'>
+      <div id='selector' class='col-4'>
+        <p>{this.props.title}</p>
         <p>{this.state.value}</p>
         <input type='range' min={min} max={max} value={this.state.value} onChange={this.handleValueChange} />
       </div>
@@ -127,55 +128,55 @@ export class TransformationDisplay extends React.Component {
           onRadioChange={this.props.onRadioChange}
           onSelectorChange={this.props.onSelectorChange}
         />
+
         <ImageDisplay image={this.props.image} />
+        <Card>
+          <row class='bold-stats-text'>
+            <p> Size: {(this.props.size / 1024).toFixed(3)} KB</p>
+            <p> Frames: {this.props.frameNumber}</p>
+          </row>
+        </Card>
       </div>
     )
     let displayAndImage = null
     if (this.props.transformationType === 'spiral') {
       displayAndImage = (
-        <div>
-          <span> Zoom</span>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='zoom' value={zoomImageDefaultZoom} />
-          <span> Rotation</span>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationSpeed' value='2' />
+        <div class='row'>
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='zoom' value={zoomImageDefaultZoom} title='Zoom' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationSpeed' value='2' title='Speed' />
         </div>
       )
     } else if (this.props.transformationType === 'genki') {
       displayAndImage = (
-        <div>
-          <span> Speed</span>
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='speed' value={genkiImageDefaultSpeed} />
-          <span> Interval</span>
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={0} max={defaultWidth} parameter='interval' value={imageDefaultInterval} />
+        <div class='row'>
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='speed' value={genkiImageDefaultSpeed} title='speed' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={0} max={defaultWidth} parameter='interval' value={imageDefaultInterval} title='interval' />
         </div>
       )
     } else if (this.props.transformationType === 'roll') {
       displayAndImage = (
-        <div>
-          <span> Speed</span>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='speed' value={rollImageDefaultSpeed} />
-          <span> Rotation</span>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationSpeed' value='2' />
-          <span> Interval</span>
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={0} max={defaultWidth} parameter='interval' value={imageDefaultInterval} />
+        <div class='row'>
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='speed' value={rollImageDefaultSpeed} title='speed' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationSpeed' value='2' title='rotation' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={0} max={defaultWidth} parameter='interval' value={imageDefaultInterval} title='interval' />
         </div>
       )
     } else if (this.props.transformationType === 'rotate') {
       displayAndImage = (
-        <div>
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='rotationSpeed' value='50' />
+        <div class='row'>
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='rotationSpeed' value='50' title='speed' />
         </div>
       )
     } else if (this.props.transformationType === 'zoom') {
       displayAndImage = (
-        <div>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='zoom' value={zoomImageDefaultZoom} />
+        <div class='row'>
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='zoom' value={zoomImageDefaultZoom} title='zoom' />
         </div>
       )
     } else {
       displayAndImage = (
-        <div>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationSpeed' value='50' />
+        <div class='row'>
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationSpeed' value='50' title='speed' />
         </div>
       )
     }
@@ -183,8 +184,11 @@ export class TransformationDisplay extends React.Component {
       <div>
         {selector}
         <Card>
-          {displayAndImage}
+          <div>
+            {displayAndImage}
+          </div>
         </Card>
+
       </div>
     )
   }

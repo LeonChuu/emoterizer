@@ -19,7 +19,7 @@ code {
 .emoji-jumboable {
     width: 3em;
     height: 3em;
-    min-height: 3em;
+    color: transparent;
 }
 .emoji {
     width: 1.375em;
