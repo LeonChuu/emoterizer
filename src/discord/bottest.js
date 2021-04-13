@@ -17,7 +17,7 @@ const emojiSplitRE = /:|>/
 const discordEmojiURL = 'https://cdn.discordapp.com/emojis/'
 
 // TODO get values from command
-const values = {}
+// const values = {}
 
 const commands = {
   test: (message) => {
@@ -95,7 +95,18 @@ client.on('message', async message => {
           const gif = await Transformation.generateGif(transformedImage)
           const emojiName = attachment.name
           // TODO change the attachment name to something better
-          message.channel.send({
+          console.log(gif.buffer.byteLength)
+          const gifSize = gif.buffer.byteLength / 1024
+
+          const sizeText = ('Gif size is: ' + gifSize.toFixed(1) + 'KB')
+          const optionalText = ((gifSize) > 250)
+            ? ' and will not be able to be used as a emote due to being over 250KB'
+            : ''
+          console.log(sizeText)
+          console.log(gif.buffer.byteLength / 1024)
+
+          message.channel.send(sizeText + optionalText, {
+
             files: [{
               attachment: gif.buffer,
               name: command + emojiName + '.gif'
@@ -149,8 +160,9 @@ function parseInput (inputLine) {
     throw Error
   }
 
-  if (splitString[0] === prefix) {
-    content.prefixed = true
+  content.prefixed = (splitString[0] === prefix)
+  if (!content.prefixed) {
+    return content
   }
 
   content.command = splitString[1]

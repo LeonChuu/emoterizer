@@ -1,7 +1,14 @@
 
 import React from 'react'
 import Card from 'react-bootstrap/Card'
-import { zoomImageDefaultZoom, rollImageDefaultSpeed, genkiImageDefaultSpeed, imageDefaultInterval, defaultWidth } from '../utils/defaultsAndConstants.js'
+import {
+  zoomImageDefaultZoom,
+  rollImageDefaultSpeed,
+  speedImageDefaultDelay,
+  genkiImageDefaultSpeed,
+  imageDefaultInterval,
+  defaultWidth
+} from '../utils/defaultsAndConstants.js'
 export class TransformationSelector extends React.Component {
   constructor () {
     super()
@@ -165,6 +172,12 @@ export class TransformationDisplay extends React.Component {
       displayAndImage = (
         <div class='row'>
           <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='rotationSpeed' value='50' title='speed' />
+        </div>
+      )
+    } else if (this.props.transformationType === 'speed') {
+      displayAndImage = (
+        <div class='row'>
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={2} parameter='delay' value={speedImageDefaultDelay} title='speed' />
         </div>
       )
     } else if (this.props.transformationType === 'zoom') {

@@ -82,7 +82,7 @@ export class Transformation {
     const newWidth = image.bitmap.width + interval
     const height = image.bitmap.height
     const frameList = []
-//     const rotationLimit = 2280
+    //     const rotationLimit = 2280
     const rotation = 360
 
     // const original = new GifFrame((new BitmapImage(image.bitmap)).reframe(0, 0, newWidth, height, 0x00000000))
@@ -129,10 +129,11 @@ export class Transformation {
 
   static async speedImage (gif, values) {
     console.log(gif)
+    const speed = parseInt(values.delay) || 1
     const test = await new GifCodec().decodeGif(gif)
     const frameList = test.frames
     frameList.forEach(frame => {
-      frame.delayCentisecs = 50
+      frame.delayCentisecs = speed
     })
     return frameList
   }
@@ -189,7 +190,7 @@ export class Transformation {
     if (image == null) {
       return
     }
-    let newImage = null;
+    let newImage = null
     console.log(values)
     if (transformationType != null) {
       const newFrameList = await Transformation.transform(image, transformationType, values)
