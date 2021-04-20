@@ -175,7 +175,13 @@ function parseInput (inputLine) {
 
   // storing arguments in keyValue pairs
   for (let i = 1; i < splitString.length; i += 2) {
-    content[splitString[i - 1]] = splitString[i]
+    const key = splitString[i - 1].toLowerCase()
+    const value = splitString[i]
+    try {
+      content[key] = parseInt(value)
+    } catch (e) {
+      content[key] = value
+    }
   }
   return content
 }

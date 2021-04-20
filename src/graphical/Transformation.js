@@ -73,31 +73,29 @@ export class Transformation {
   }
 
   static async rollImage (image, values) {
-    const minRotationAngle = 90
-    const rotationSpeed = values.rotationSpeed || 50
-    const interval = values.interval || imageDefaultInterval
+    const rotationSpeed = values.rotationspeed || 50
     const shift = values.speed || rollImageDefaultSpeed
-    const step = minRotationAngle - (minRotationAngle * (rotationSpeed / 100)) || 2
+    const step = -(rotationSpeed * 1.8) || -2
     const width = image.bitmap.width
-    const newWidth = image.bitmap.width + interval
+    // const newWidth = image.bitmap.width + interval
+    const newWidth = image.bitmap.width * 3
     const height = image.bitmap.height
     const frameList = []
     //     const rotationLimit = 2280
-    const rotation = 360
 
     // const original = new GifFrame((new BitmapImage(image.bitmap)).reframe(0, 0, newWidth, height, 0x00000000))
     // const originalJimp = GifUtil.copyAsJimp(Jimp, original)
 
-    for (let i = 0, j = 0; (Math.abs(i) < newWidth); i += shift, j += rotation / step) {
+    for (let i = 0, j = 0; (Math.abs(i) < newWidth); i += shift, j += step) {
       const original = GifUtil.copyAsJimp(Jimp, image.bitmap).rotate(j, false)
-      const originalResized = new GifFrame((new BitmapImage(original.bitmap)).reframe(0, 0, newWidth, height, 0x00000000))
+      const originalResized = new GifFrame((new BitmapImage(original.bitmap)).reframe(-image.bitmap.width, 0, newWidth, height, 0x00000000))
       const newImageAux = GifUtil.copyAsJimp(Jimp, originalResized)
       const newImage = GifUtil.copyAsJimp(Jimp, originalResized)
       newImage.scan(0, 0, newWidth, height, function (x, y, idx) {
         const rgbaArray = Object.values(Jimp.intToRGBA(newImageAux.getPixelColor(Transformation.mod((x - i), newWidth), y)))
         // console.log([this.bitmap.data[0], Object.values(Jimp.intToRGBA(newImage.getPixelColor((x + shift) % image.bitmap.width, y)))[0]])
-        for (let j = 0; j < 4; j++) {
-          this.bitmap.data[idx + j] = rgbaArray[j]
+        for (let k = 0; k < 4; k++) {
+          this.bitmap.data[idx + k] = rgbaArray[k]
         }
       })
       const fCopied = new GifFrame((new BitmapImage(newImage.bitmap)).reframe(0, 0, width, height))
@@ -111,7 +109,7 @@ export class Transformation {
   static async rotateImage (image, values) {
     const rotationLimit = 360
     const minRotationAngle = 90
-    const rotationSpeed = values.rotationSpeed || 50
+    const rotationSpeed = values.rotationspeed || 50
     const step = minRotationAngle - (minRotationAngle * (rotationSpeed / 100)) || 2
     const frameList = []
     const original = new GifFrame(new BitmapImage(image.bitmap))
@@ -139,7 +137,7 @@ export class Transformation {
   }
 
   static async spiralImage (image, values) {
-    const rotationSpeed = parseInt(values.rotationSpeed) || 50
+    const rotationSpeed = parseInt(values.rotationspeed) || 50
     const step = 90 * (rotationSpeed / 100) || 2
     const zoom = parseFloat(values.zoom) || zoomImageDefaultZoom
     const width = image.bitmap.width

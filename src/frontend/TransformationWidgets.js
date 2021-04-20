@@ -150,7 +150,7 @@ export class TransformationDisplay extends React.Component {
       displayAndImage = (
         <div class='row'>
           <RangeValueSelector onValueChange={this.props.onValueChange} parameter='zoom' value={zoomImageDefaultZoom} title='Zoom' />
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationSpeed' value='2' title='Speed' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationspeed' value='2' title='Speed' />
         </div>
       )
     } else if (this.props.transformationType === 'genki') {
@@ -164,14 +164,14 @@ export class TransformationDisplay extends React.Component {
       displayAndImage = (
         <div class='row'>
           <RangeValueSelector onValueChange={this.props.onValueChange} parameter='speed' value={rollImageDefaultSpeed} title='speed' />
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationSpeed' value='2' title='rotation' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={-180} max={180} parameter='rotationspeed' value='2' title='rotation' />
           <RangeValueSelector onValueChange={this.props.onValueChange} min={0} max={defaultWidth} parameter='interval' value={imageDefaultInterval} title='interval' />
         </div>
       )
     } else if (this.props.transformationType === 'rotate') {
       displayAndImage = (
         <div class='row'>
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='rotationSpeed' value='50' title='speed' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='rotationspeed' value='50' title='speed' />
         </div>
       )
     } else if (this.props.transformationType === 'speed') {
@@ -189,7 +189,7 @@ export class TransformationDisplay extends React.Component {
     } else {
       displayAndImage = (
         <div class='row'>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationSpeed' value='50' title='speed' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationspeed' value='50' title='speed' />
         </div>
       )
     }
