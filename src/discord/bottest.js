@@ -100,7 +100,7 @@ client.on('message', async message => {
 
           const sizeText = ('Gif size is: ' + gifSize.toFixed(1) + 'KB')
           const optionalText = ((gifSize) > 250)
-            ? ' and will not be able to be used as a emote due to being over 250KB'
+            ? ' and will not be able to be used as an emote due to being over 250KB'
             : ''
           console.log(sizeText)
           console.log(gif.buffer.byteLength / 1024)
@@ -175,13 +175,7 @@ function parseInput (inputLine) {
 
   // storing arguments in keyValue pairs
   for (let i = 1; i < splitString.length; i += 2) {
-    const key = splitString[i - 1].toLowerCase()
-    const value = splitString[i]
-    try {
-      content[key] = parseInt(value)
-    } catch (e) {
-      content[key] = value
-    }
+    content[splitString[i - 1]] = splitString[i]
   }
   return content
 }

@@ -12,7 +12,33 @@ import {
 export class TransformationSelector extends React.Component {
   constructor () {
     super()
-    this.state = { transformation: 'flipHorizontal' }
+    this.state = {
+      transformation: 'flipHorizontal',
+      text: {
+        EN: {
+          vertical: 'Vertical',
+          horizontal: 'Horizontal',
+          grayscale: 'Grayscale',
+          rotate: 'Spin',
+          genki: 'Genki',
+          spiral: 'Spiral',
+          zoom: 'Zoom',
+          roll: 'Roll',
+          speed: 'Speed'
+        },
+        BR: {
+          vertical: 'Vertical',
+          horizontal: 'Horizontal',
+          grayscale: 'Grayscale',
+          rotate: 'Girar',
+          genki: 'Genki',
+          spiral: 'Espiral',
+          zoom: 'Zoom',
+          roll: 'Rolar',
+          speed: 'Velocidade'
+        }
+      }
+    }
   }
 
   handleRadioChange (transformation) {
@@ -24,6 +50,7 @@ export class TransformationSelector extends React.Component {
   }
 
   render () {
+    const text = this.state.text[this.props.language]
     return (
       <div id='selector'>
         <form>
@@ -33,16 +60,15 @@ export class TransformationSelector extends React.Component {
             }
           }
           >
-            <option value='flipVertical'> Vertical </option>
-            <option value='flipHorizontal'>Horizontal</option>
-            <option value='grayscale'>Grayscale</option>
-            <option value='rotate'>Rotate</option>
-            <option value='spiral'>Spiral</option>
-            <option value='zoom'>Zoom</option>
-            <option value='genki'>Genki</option>
-            <option value='roll'>Roll</option>
-            <option value='speed'>Speed</option>
-            <option value='spin'>Spin</option>
+            <option value='flipVertical'> {text.vertical} </option>
+            <option value='flipHorizontal'>{text.horizontal}</option>
+            <option value='grayscale'>{text.grayscale}</option>
+            <option value='rotate'>{text.rotate}</option>
+            <option value='spiral'>{text.spiral}</option>
+            <option value='zoom'>{text.zoom}</option>
+            <option value='genki'>{text.genki}</option>
+            <option value='roll'>{text.roll}</option>
+            <option value='speed'>{text.speed}</option>
           </select>
           <input type='button' onClick={() => this.handleRadioChange(this.state.transformation)} value='VAI' />
         </form>
@@ -52,22 +78,41 @@ export class TransformationSelector extends React.Component {
 }
 
 class ImageDisplay extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      text: {
+        EN: {
+          full: 'Full Size',
+          standalone: 'Standalone emoji size',
+          inline: 'Inlined emoji size'
+        },
+        BR: {
+          full: 'Tamanho total',
+          standalone: 'Tamanho de emoji sozinho',
+          inline: 'Tamanho de emoji em linha'
+        }
+      }
+    }
+  }
+
   render () {
+    const text = this.state.text[this.props.language]
     return (
       <Card>
         <div class='image-display row align-items-end'>
           <div class='col-4'>
-            Full Size
+            {text.full}
             <br />
             <img src={this.props.image} alt='full' />
           </div>
           <div class='col-4'>
-            Standalone emoji size
+            {text.standalone}
             <br />
             <img src={this.props.image} class='emoji-jumboable' alt='emoji' />
           </div>
           <div class='col-4'>
-            <span>Inlined emoji size</span>
+            {text.inline}
             <br />
             <img src={this.props.image} class='emoji' alt='inlined emoji' />
           </div>
@@ -96,7 +141,6 @@ class RangeValueSelector extends React.PureComponent {
       value: value,
       default: true
     }
-    console.log('aaaaa')
   }
 
   handleValueChange (e) {
@@ -127,81 +171,118 @@ class RangeValueSelector extends React.PureComponent {
   }
 }
 
-export class TransformationDisplay extends React.Component {
-  render () {
-    const selector = (
-      <div>
-        <TransformationSelector
-          onRadioChange={this.props.onRadioChange}
-          onSelectorChange={this.props.onSelectorChange}
-        />
+export class TransformationValueSliders extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      transformation: 'flipHorizontal',
+      text: {
+        EN: {
+          rotationSpeed: 'Speed',
+          zoom: 'Zoom',
+          speed: 'Speed',
+          rotation: 'Rotation',
+          interval: 'Interval'
+        },
+        BR: {
+          rotationSpeed: 'Velocidade',
+          zoom: 'Zoom',
+          speed: 'Velocidade',
+          rotation: 'Rotação',
+          interval: 'Interval'
+        }
+      }
+    }
+  }
 
-        <ImageDisplay image={this.props.image} />
-        <Card>
-          <row class='bold-stats-text'>
-            <p> Size: {(this.props.size / 1024).toFixed(3)} KB</p>
-            <p> Frames: {this.props.frameNumber}</p>
-          </row>
-        </Card>
-      </div>
-    )
+  render () {
+    const text = this.state.text[this.props.language]
     let displayAndImage = null
     if (this.props.transformationType === 'spiral') {
       displayAndImage = (
         <div class='row'>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='zoom' value={zoomImageDefaultZoom} title='Zoom' />
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationspeed' value='2' title='Speed' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='zoom' value={zoomImageDefaultZoom} title={text.zoom} />
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationspeed' value='2' title={text.speed} />
         </div>
       )
     } else if (this.props.transformationType === 'genki') {
       displayAndImage = (
         <div class='row'>
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='speed' value={genkiImageDefaultSpeed} title='speed' />
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={0} max={defaultWidth} parameter='interval' value={imageDefaultInterval} title='interval' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='speed' value={genkiImageDefaultSpeed} title={text.speed} />
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={0} max={defaultWidth} parameter='interval' value={imageDefaultInterval} title={text.interval} />
         </div>
       )
     } else if (this.props.transformationType === 'roll') {
       displayAndImage = (
         <div class='row'>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='speed' value={rollImageDefaultSpeed} title='speed' />
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={-180} max={180} parameter='rotationspeed' value='2' title='rotation' />
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={0} max={defaultWidth} parameter='interval' value={imageDefaultInterval} title='interval' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='speed' value={rollImageDefaultSpeed} title={text.speed} />
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={-180} max={180} parameter='rotationspeed' value='2' title={text.rotation} />
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={0} max={defaultWidth} parameter='interval' value={imageDefaultInterval} title={text.interval} />
         </div>
       )
     } else if (this.props.transformationType === 'rotate') {
       displayAndImage = (
         <div class='row'>
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='rotationspeed' value='50' title='speed' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='rotationspeed' value='50' title={text.speed} />
         </div>
       )
     } else if (this.props.transformationType === 'speed') {
       displayAndImage = (
         <div class='row'>
-          <RangeValueSelector onValueChange={this.props.onValueChange} min={2} parameter='delay' value={speedImageDefaultDelay} title='speed' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={2} parameter='delay' value={speedImageDefaultDelay} title={text.speed} />
         </div>
       )
     } else if (this.props.transformationType === 'zoom') {
       displayAndImage = (
         <div class='row'>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='zoom' value={zoomImageDefaultZoom} title='zoom' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='zoom' value={zoomImageDefaultZoom} title={text.zoom} />
         </div>
       )
     } else {
       displayAndImage = (
         <div class='row'>
-          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationspeed' value='50' title='speed' />
+          <RangeValueSelector onValueChange={this.props.onValueChange} parameter='rotationspeed' value='50' title={text.speed} />
         </div>
       )
     }
+    return displayAndImage
+  }
+}
+export class TransformationDisplay extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      text: {
+        EN: {
+          size: 'Size',
+          frames: 'Number of frames'
+        },
+        BR: {
+          size: 'Tamanho',
+          frames: 'Quantidade de frames'
+        }
+      }
+    }
+  }
+
+  render () {
+    const text = this.state.text[this.props.language]
+    const selector = (
+      <div>
+
+        <ImageDisplay image={this.props.image} language={this.props.language} />
+        <Card>
+          <row class='bold-stats-text'>
+            <p> {text.size}: {(this.props.size / 1024).toFixed(3)} KB</p>
+            <p> {text.frames}: {this.props.frameNumber}</p>
+          </row>
+        </Card>
+      </div>
+    )
+
     return (
       <div>
         {selector}
-        <Card>
-          <div>
-            {displayAndImage}
-          </div>
-        </Card>
-
       </div>
     )
   }

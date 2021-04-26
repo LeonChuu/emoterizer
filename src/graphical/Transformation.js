@@ -108,12 +108,11 @@ export class Transformation {
 
   static async rotateImage (image, values) {
     const rotationLimit = 360
-    const minRotationAngle = 90
     const rotationSpeed = values.rotationspeed || 50
-    const step = minRotationAngle - (minRotationAngle * (rotationSpeed / 100)) || 2
+    const step = -(rotationSpeed * 1.8) || -2
     const frameList = []
     const original = new GifFrame(new BitmapImage(image.bitmap))
-    for (let i = 0; Math.abs(i) < rotationLimit; i += rotationLimit / step) {
+    for (let i = 0; Math.abs(i) < rotationLimit; i += step) {
       image = GifUtil.copyAsJimp(Jimp, original)
       //    GifUtil.quantizeDekker(imageOrImages, maxColorIndexes, dither)
       image.rotate(i, false)

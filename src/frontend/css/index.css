@@ -15,6 +15,11 @@ code {
 .image-display {
   font-size: 16px;
 }
+.original-image {
+    width: 10em;
+    height: 10em;
+    color: transparent;
+}
 
 .emoji-jumboable {
     width: 3em;
