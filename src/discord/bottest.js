@@ -1,11 +1,18 @@
 import Transformation from '../graphical/Transformation.js'
 import { createRequire } from 'module'
 import got from 'got'
+import path, { dirname } from 'path'
+
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 const require = createRequire(import.meta.url)
 const Discord = require('discord.js')
 const fs = require('fs')
 // const got = require('got')
 const Jimp = require('jimp')
+const { GifUtil, Gif } = require('gifwrap')
 const token = process.env.TOKEN
 
 const client = new Discord.Client()
@@ -15,6 +22,7 @@ const re = /\s+/
 const emojiRE = /^<.*>$/
 const emojiSplitRE = /:|>/
 const discordEmojiURL = 'https://cdn.discordapp.com/emojis/'
+const pat = GifUtil.read(path.resolve(__dirname, 'pat.gif'))
 
 // TODO get values from command
 // const values = {}
@@ -54,6 +62,11 @@ const commands = {
   genki: async (message, image, values) => {
     return Transformation.transform(image, 'genki', values)
   },
+  pat: async (message, image, values) => {
+    values.image = await pat
+    // pat.then(p=>p.frames[0].scanAllIndexes( id => {}))
+    return Transformation.transform(image, 'pat', values)
+  },
   roll: async (message, image, values) => {
     return Transformation.transform(image, 'roll', values)
   },
@@ -72,12 +85,18 @@ const commands = {
 }
 
 client.login(token)
+
 client.on('message', async message => {
   const args = parseInput(message.content)
+
   console.log(args)
   if (args.prefixed) {
     const command = args.command
     console.log(command)
+
+    if (command === 'pat') {
+      args.pat = await pat
+    }
 
     if (message.attachments.size !== 0) {
       message.attachments.forEach(async attachment => {
@@ -85,11 +104,10 @@ client.on('message', async message => {
           console.log(args)
           const emojiURL = attachment.proxyURL
           let image
-          if (command !== 'speed') {
-            image = Transformation.resizeDown(await Jimp.read(emojiURL))
-          } else {
+          if (command === 'speed') {
             image = Buffer.from((await got(emojiURL)).rawBody.buffer)
-            console.log(image)
+          } else {
+            image = Transformation.resizeDown(await Jimp.read(emojiURL))
           }
           const transformedImage = await commands[command](message, image, args)
           const gif = await Transformation.generateGif(transformedImage)

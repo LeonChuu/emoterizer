@@ -4,9 +4,11 @@ import { zoomImageDefaultZoom, rollImageDefaultSpeed, genkiImageDefaultSpeed, im
 export class Transformation {
   static transform (image, transformation, value) {
     const transformMap = {
+      blit: (image, value) => Transformation.blitImage(image, value),
       flipVertical: (image) => Transformation.flipImage(image, { vertical: true }),
       flipHorizontal: (image) => Transformation.flipImage(image, { horizontal: true }),
       grayscale: (image) => image.grayscale(),
+      pat: (image, value) => Transformation.patImage(image, value),
       rotate: (image, value) => Transformation.rotateImage(image, value),
       spiral: (image, value) => Transformation.spiralImage(image, value),
       genki: (image, value) => Transformation.genkiImage(image, value),
@@ -23,7 +25,7 @@ export class Transformation {
     const codec = new GifCodec()
     if (opt.quantization !== 'none') {
       console.log('qtizing')
-      GifUtil.quantizeDekker(frameList)
+      GifUtil.quantizeWu(frameList)
     }
     const gif = await codec.encodeGif(frameList, { loops: 0 })
     const blob = new window.Blob([gif.buffer], { type: 'image/gif' })
@@ -32,6 +34,41 @@ export class Transformation {
 
   static mod (n, m) {
     return ((n % m) + m) % m
+  }
+
+  static async patImage (image, values) {
+    const toBlit = values.image.frames
+    const squishArg = values.squish || 0
+    const offsetArg = values.offset || 0
+    const squishVal = (Math.max(0, (100 - Math.abs(squishArg)) / 100.0))
+    const yOffset = Math.max(0, Math.abs(offsetArg))
+    // const squishFactor = [[1.0, 1.0], [0.9, 0.6], [0.9, 0.5], [0.96, 0.7]]
+    const squishFactor = [[1.0, 1.0], [1.1 / squishVal, 0.95 * squishVal], [1.2 / squishVal, 0.95 * squishVal], [1.1 / squishVal, 0.95 * squishVal]]
+    const background = GifUtil.copyAsJimp(Jimp, new BitmapImage(125, 125, 0))
+    const frameList = toBlit.map((frame, index) => {
+      const squish = squishFactor[index]
+      const newFrame = image.clone().resize(defaultWidth * squish[0], defaultHeight * squish[1])
+      const squishHeightOffset = defaultHeight * (1 - squish[1]) + yOffset
+      const handHeightOffset = defaultHeight * (0.9 - squish[1])
+      const original = background.clone().composite(newFrame,
+        (defaultWidth * (1 - squish[0])) / 2, squishHeightOffset).clone()
+      // const original = GifUtil.copyAsJimp(Jimp, newFrame.reframe(0, yOffset, edgeLength, edgeLength, 0))
+      return new GifFrame(new BitmapImage(original.composite(GifUtil.copyAsJimp(Jimp, frame), 0, handHeightOffset).bitmap))
+      // return new GifFrame(new BitmapImage(frame))
+    })
+    return frameList
+  }
+
+  static async blitImage (image, values) {
+    const toBlit = values.image.frames
+    console.log(toBlit)
+
+    const frameList = toBlit.map(frame => {
+      const original = image.clone()
+      return new GifFrame(new BitmapImage(original.composite(GifUtil.copyAsJimp(Jimp, frame), 0, 0).bitmap))
+      // return new GifFrame(new BitmapImage(frame))
+    })
+    return frameList
   }
 
   static async flipImage (image, values) {
@@ -152,7 +189,7 @@ export class Transformation {
       console.log(image)
       image.rotate(i, false)
       reframedImage = GifUtil.copyAsJimp(Jimp, new BitmapImage(image.bitmap).reframe(position, position, width - position * 2, height - position * 2))
-      reframedImage.contain(128, 128)
+      reframedImage.contain(defaultWidth, defaultHeight)
       position = position + 2
       frameList.push(new GifFrame(new BitmapImage(reframedImage.bitmap)))
     }
@@ -176,7 +213,6 @@ export class Transformation {
       reframedImage.contain(128, 128)
 
       frameList.push(new GifFrame(new BitmapImage(reframedImage.bitmap)))
-      console.log(frameList)
     }
     return frameList
 
@@ -216,12 +252,14 @@ export class Transformation {
 
   static generateGif (frameList) {
     const codec = new GifCodec()
-    GifUtil.quantizeDekker(frameList)
+    GifUtil.quantizeSorokin(frameList, 256, 'top-pop')
     return codec.encodeGif(frameList)
   }
 
   static resizeDown (jimpImage) {
-    jimpImage.resize(defaultHeight, defaultWidth)
+    if ((jimpImage.bitmap.width !== defaultWidth) && (jimpImage.bitmap.defaultHeight !== defaultHeight)) {
+      jimpImage.resize(defaultHeight, defaultWidth)
+    }
     return jimpImage
   }
 }
