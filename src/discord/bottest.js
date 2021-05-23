@@ -1,4 +1,6 @@
 import Transformation from '../graphical/Transformation.js'
+import PseudoGif from '../graphical/PseudoGif.js'
+
 import { createRequire } from 'module'
 import got from 'got'
 import path, { dirname } from 'path'
@@ -12,7 +14,7 @@ const Discord = require('discord.js')
 const fs = require('fs')
 // const got = require('got')
 const Jimp = require('jimp')
-const { GifUtil, Gif } = require('gifwrap')
+const { GifUtil, Gif, GifCodec, GifFrame, BitmapImage } = require('gifwrap')
 const token = process.env.TOKEN
 
 const client = new Discord.Client()
@@ -85,7 +87,7 @@ const commands = {
 }
 
 client.login(token)
-
+const codec = new GifCodec()
 client.on('message', async message => {
   const args = parseInput(message.content)
 
@@ -104,10 +106,18 @@ client.on('message', async message => {
           console.log(args)
           const emojiURL = attachment.proxyURL
           let image
-          if (command === 'speed') {
-            image = Buffer.from((await got(emojiURL)).rawBody.buffer)
-          } else {
-            image = Transformation.resizeDown(await Jimp.read(emojiURL))
+          /*
+            if (command === 'speed') {
+              image = Buffer.from((await got(emojiURL)).rawBody.buffer)
+            } else {
+              image = Transformation.resizeDown(await Jimp.read(emojiURL))
+            }
+            */
+          try {
+            image = await codec.decodeGif(Buffer.from((await got(emojiURL)).rawBody.buffer))
+          } catch {
+            const jimpImage = await Jimp.read(emojiURL)
+            image = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
           }
           const transformedImage = await commands[command](message, image, args)
           const gif = await Transformation.generateGif(transformedImage)
@@ -144,7 +154,14 @@ client.on('message', async message => {
           const emojiName = emoji[1]
           console.log(discordEmojiURL + emojiNumber + '.png')
           const emojiURL = discordEmojiURL + emojiNumber + '.png'
-          const image = Transformation.resizeDown(await Jimp.read(emojiURL))
+          let image
+          try {
+            image = await codec.decodeGif(Buffer.from((await got(emojiURL)).rawBody.buffer))
+          } catch {
+            const jimpImage = await Jimp.read(emojiURL)
+            image = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
+          }
+          // const image = Transformation.resizeDown(await Jimp.read(emojiURL))
           const transformedImage = await commands[command](message, image, args)
           const gif = await Transformation.generateGif(transformedImage)
 

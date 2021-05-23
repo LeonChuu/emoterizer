@@ -5,11 +5,13 @@ import './frontend/css/index.css'
 // import reportWebVitals from './utils/reportWebVitals'
 import Jimp from 'jimp'
 import { Transformation } from './graphical/Transformation.js'
+import { PseudoGif } from './graphical/PseudoGif.js'
 import { TransformationDisplay, TransformationSelector, TransformationValueSliders} from './frontend/TransformationWidgets.js'
 import { defaultWidth, defaultHeight } from './utils/defaultsAndConstants'
 import { HeadBar } from './frontend/Navbar.js'
 import Container from 'react-bootstrap/Container'
 import Card from 'react-bootstrap/Card'
+import { BitmapImage, GifCodec, GifFrame } from 'gifwrap'
 const defaultLanguage = 'EN'
 // TODO colocar outra classe pra fazer a transformacao antes e rerenderizr
 
@@ -85,29 +87,39 @@ class Page extends React.Component {
 
   async handleInputChange (image, resize) {
     const resizeFlag = resize || true
-    let jimpImage, imageURL
+    let outputImage, imageURL, buffer
     try {
       imageURL = URL.createObjectURL(image)
-      jimpImage = await Jimp.read(imageURL)
+      buffer = Buffer.from(
+        await (
+          await (
+            await window.fetch(imageURL)
+          ).blob()).arrayBuffer())
     } catch (e) {
       console.log(e)
       return
     }
 
-    if (resizeFlag) {
-      jimpImage.resize(defaultHeight, defaultWidth)
+    // targetImage = await new GifCodec().decodeGif(Buffer.from(await (await (await window.fetch(this.state.originalImageURL)).blob()).arrayBuffer()))
+    try {
+      // #TODO try to resize all frames in a gif
+      outputImage = await new GifCodec().decodeGif(buffer)
+    } catch (e) {
+      console.log(e)
+      console.log(buffer)
+      const jimpImage = await Jimp.read(buffer)
+      if (resizeFlag) {
+        jimpImage.resize(defaultHeight, defaultWidth)
+      }
+      outputImage = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
     }
-    this.setState({ originalImage: jimpImage, originalImageURL: imageURL })
+
+    this.setState({ originalImage: outputImage, originalImageURL: imageURL })
   }
 
   async handleRadioChange (transformationType) {
     console.log(this.state)
-    let targetImage
-    if (transformationType === 'speed') {
-      targetImage = Buffer.from(await (await (await window.fetch(this.state.originalImageURL)).blob()).arrayBuffer())
-    } else {
-      targetImage = this.state.originalImage
-    }
+    const targetImage = this.state.originalImage
     this.setState({
       transformationType: transformationType,
       ...await Transformation.updateImage(targetImage, transformationType, this.state.values)

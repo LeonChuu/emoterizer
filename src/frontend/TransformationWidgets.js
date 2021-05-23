@@ -24,7 +24,8 @@ export class TransformationSelector extends React.Component {
           spiral: 'Spiral',
           zoom: 'Zoom',
           roll: 'Roll',
-          speed: 'Speed'
+          speed: 'Speed',
+          pat: 'Headpat'
         },
         BR: {
           vertical: 'Vertical',
@@ -35,7 +36,8 @@ export class TransformationSelector extends React.Component {
           spiral: 'Espiral',
           zoom: 'Zoom',
           roll: 'Rolar',
-          speed: 'Velocidade'
+          speed: 'Velocidade',
+          pat: 'Afagão'
         }
       }
     }
@@ -69,6 +71,7 @@ export class TransformationSelector extends React.Component {
             <option value='genki'>{text.genki}</option>
             <option value='roll'>{text.roll}</option>
             <option value='speed'>{text.speed}</option>
+            <option value='pat'>{text.pat}</option>
           </select>
           <input type='button' onClick={() => this.handleRadioChange(this.state.transformation)} value='VAI' />
         </form>
@@ -182,14 +185,16 @@ export class TransformationValueSliders extends React.Component {
           zoom: 'Zoom',
           speed: 'Speed',
           rotation: 'Rotation',
-          interval: 'Interval'
+          interval: 'Interval',
+          squish: 'Squish'
         },
         BR: {
           rotationSpeed: 'Velocidade',
           zoom: 'Zoom',
           speed: 'Velocidade',
           rotation: 'Rotação',
-          interval: 'Interval'
+          interval: 'Interval',
+          squish: 'Elasticidade'
         }
       }
     }
@@ -224,6 +229,12 @@ export class TransformationValueSliders extends React.Component {
       displayAndImage = (
         <div class='row'>
           <RangeValueSelector onValueChange={this.props.onValueChange} min={-100} max={100} parameter='rotationspeed' value='50' title={text.speed} />
+        </div>
+      )
+    } else if (this.props.transformationType === 'pat') {
+      displayAndImage = (
+        <div class='row'>
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={1} max={99} parameter='squish' value='10' title={text.squish} />
         </div>
       )
     } else if (this.props.transformationType === 'speed') {
