@@ -108,13 +108,12 @@ export class Transformation {
     for (let i = 0, frameIndex = 0; Math.abs(i) < newWidth; i += shift, frameIndex = (frameIndex + 1) % length) {
       const newImage = GifUtil.copyAsJimp(Jimp, originalReframed[frameIndex])
         .scan(0, 0, newWidth, height, function (x, y, idx) {
-          const rgbaArray = Object.values(Jimp.intToRGBA(originalJimp[frameIndex].getPixelColor(Transformation.mod((x - i), newWidth), y)))
-          // console.log([this.bitmap.data[0], Object.values(Jimp.intToRGBA(newImage.getPixelColor((x + shift) % image.bitmap.width, y)))[0]])
+          const rgba = originalJimp[frameIndex].getPixelColor(Transformation.mod((x - i), newWidth), y)
           for (let j = 0; j < 4; j++) {
-            this.bitmap.data[idx + j] = rgbaArray[j]
+            this.bitmap.data[idx + j] = (rgba >> (24 - (j * 8))) % 256
           }
         })
-      const fCopied = new GifFrame((new BitmapImage(newImage.bitmap)).reframe(0, 0, width, height))
+      const fCopied = new GifFrame(newImage.bitmap).reframe(0, 0, width, height)
       frameList.push(fCopied)
     }
     return new PseudoGif(frameList, height, width)
@@ -135,19 +134,20 @@ export class Transformation {
     // const original = new GifFrame((new BitmapImage(image.bitmap)).reframe(0, 0, newWidth, height, 0x00000000))
     // const originalJimp = GifUtil.copyAsJimp(Jimp, original)
 
+    // const originalJimp = gif.frames.map(frame => GifUtil.copyAsJimp(Jimp, frame))
     for (let i = 0, j = 0, frameIndex = 0; (Math.abs(i) < newWidth); i += shift, j += step, frameIndex = (frameIndex + 1) % length) {
       const original = GifUtil.copyAsJimp(Jimp, gif.frames[frameIndex]).rotate(j, false)
-      const originalResized = new GifFrame((new BitmapImage(original.bitmap)).reframe(-width, 0, newWidth, height, 0x00000000))
-      const newImageAux = GifUtil.copyAsJimp(Jimp, originalResized)
+      const originalResized = new GifFrame(original.bitmap).reframe(-width, 0, newWidth, height, 0x00000000)
+      const newImageAux = GifUtil.shareAsJimp(Jimp, originalResized)
       const newImage = GifUtil.copyAsJimp(Jimp, originalResized)
       newImage.scan(0, 0, newWidth, height, function (x, y, idx) {
-        const rgbaArray = Object.values(Jimp.intToRGBA(newImageAux.getPixelColor(Transformation.mod((x - i), newWidth), y)))
+        const rgba = newImageAux.getPixelColor(Transformation.mod((x - i), newWidth), y)
         // console.log([this.bitmap.data[0], Object.values(Jimp.intToRGBA(newImage.getPixelColor((x + shift) % image.bitmap.width, y)))[0]])
         for (let k = 0; k < 4; k++) {
-          this.bitmap.data[idx + k] = rgbaArray[k]
+          this.bitmap.data[idx + k] = (rgba >> (24 - (k * 8))) % 256
         }
       })
-      const fCopied = new GifFrame((new BitmapImage(newImage.bitmap)).reframe(0, 0, width, height))
+      const fCopied = new GifFrame(newImage.bitmap).reframe(0, 0, width, height)
       frameList.push(fCopied)
     }
     return new PseudoGif(frameList, height, width)
@@ -269,11 +269,13 @@ export class Transformation {
     return new GifCodec().encodeGif(gif.frames)
   }
 
-  static resizeDown (jimpImage) {
-    if ((jimpImage.bitmap.width !== defaultWidth) && (jimpImage.bitmap.defaultHeight !== defaultHeight)) {
-      jimpImage.resize(defaultHeight, defaultWidth)
+  static resizeDown (gif) {
+    if ((gif.width !== defaultWidth) && (gif.height !== defaultHeight)) {
+      const frames = gif.frames.map(frame => new GifFrame(GifUtil.copyAsJimp(Jimp, frame.bitmap).resize(defaultHeight, defaultWidth).bitmap))
+      return new PseudoGif(frames, defaultHeight, defaultWidth)
+    } else {
+      return gif
     }
-    return jimpImage
   }
 }
 export default Transformation

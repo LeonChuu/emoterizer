@@ -119,6 +119,7 @@ client.on('message', async message => {
             const jimpImage = await Jimp.read(emojiURL)
             image = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
           }
+          image = Transformation.resizeDown(image)
           const transformedImage = await commands[command](message, image, args)
           const gif = await Transformation.generateGif(transformedImage)
           const emojiName = attachment.name
@@ -161,7 +162,7 @@ client.on('message', async message => {
             const jimpImage = await Jimp.read(emojiURL)
             image = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
           }
-          // const image = Transformation.resizeDown(await Jimp.read(emojiURL))
+          image = Transformation.resizeDown(image)
           const transformedImage = await commands[command](message, image, args)
           const gif = await Transformation.generateGif(transformedImage)
 
