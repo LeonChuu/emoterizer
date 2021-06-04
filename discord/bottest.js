@@ -1,20 +1,13 @@
-import Transformation from '../graphical/Transformation.js'
-import PseudoGif from '../graphical/PseudoGif.js'
-
-import { createRequire } from 'module'
-import got from 'got'
-import path, { dirname } from 'path'
-
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const require = createRequire(import.meta.url)
+const { Transformation, PseudoGif } = require('emoterizer-transformations')
 const Discord = require('discord.js')
 const fs = require('fs')
+const got = require('got')
+const path = require('path')
 // const got = require('got')
 const Jimp = require('jimp')
-const { GifUtil, Gif, GifCodec, GifFrame, BitmapImage } = require('gifwrap')
+const defaultTimeout = 4000
+const activeUsers = {}
+const { GifUtil, GifCodec, GifFrame, BitmapImage } = require('gifwrap')
 const token = process.env.TOKEN
 
 const client = new Discord.Client()
@@ -28,6 +21,14 @@ const pat = GifUtil.read(path.resolve(__dirname, 'pat.gif'))
 
 // TODO get values from command
 // const values = {}
+function getSizeText(size) {
+  const sizeText = ('Gif size is: ' + size.toFixed(1) + 'KB')
+  const optionalText = ((size) > 250)
+    ? ' and will not be able to be used as an emote due to being over 250KB'
+    : ''
+  return sizeText + optionalText
+}
+
 
 const commands = {
   test: (message) => {
@@ -95,6 +96,14 @@ client.on('message', async message => {
   if (args.prefixed) {
     const command = args.command
     console.log(command)
+    const uid = message.author.id
+    if (activeUsers[uid] == null) {
+      activeUsers[uid] = true
+      setTimeout(() => { delete activeUsers[uid] }, defaultTimeout)
+    } else {
+      message.channel.send('Wait a few seconds before repeating your request.')
+      return
+    }
 
     if (command === 'pat') {
       args.pat = await pat
@@ -106,13 +115,6 @@ client.on('message', async message => {
           console.log(args)
           const emojiURL = attachment.proxyURL
           let image
-          /*
-            if (command === 'speed') {
-              image = Buffer.from((await got(emojiURL)).rawBody.buffer)
-            } else {
-              image = Transformation.resizeDown(await Jimp.read(emojiURL))
-            }
-            */
           try {
             image = await codec.decodeGif(Buffer.from((await got(emojiURL)).rawBody.buffer))
           } catch {
@@ -124,17 +126,9 @@ client.on('message', async message => {
           const gif = await Transformation.generateGif(transformedImage)
           const emojiName = attachment.name
           // TODO change the attachment name to something better
-          console.log(gif.buffer.byteLength)
           const gifSize = gif.buffer.byteLength / 1024
 
-          const sizeText = ('Gif size is: ' + gifSize.toFixed(1) + 'KB')
-          const optionalText = ((gifSize) > 250)
-            ? ' and will not be able to be used as an emote due to being over 250KB'
-            : ''
-          console.log(sizeText)
-          console.log(gif.buffer.byteLength / 1024)
-
-          message.channel.send(sizeText + optionalText, {
+          message.channel.send(getSizeText(gifSize), {
 
             files: [{
               attachment: gif.buffer,
@@ -165,9 +159,10 @@ client.on('message', async message => {
           image = Transformation.resizeDown(image)
           const transformedImage = await commands[command](message, image, args)
           const gif = await Transformation.generateGif(transformedImage)
+          const gifSize = gif.buffer.byteLength / 1024
 
           // TODO change the attachment name to something better
-          message.channel.send({
+          message.channel.send(getSizeText(gifSize), {
             files: [{
               attachment: gif.buffer,
               name: command + emojiName + '.gif'

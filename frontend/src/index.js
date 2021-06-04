@@ -1,20 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import './frontend/css/index.css'
+import './css/index.css'
 // import reportWebVitals from './utils/reportWebVitals'
 import Jimp from 'jimp'
-import { Transformation } from './graphical/Transformation.js'
-import { PseudoGif } from './graphical/PseudoGif.js'
-import { TransformationDisplay, TransformationSelector, TransformationValueSliders} from './frontend/TransformationWidgets.js'
-import { defaultWidth, defaultHeight } from './utils/defaultsAndConstants'
-import { HeadBar } from './frontend/Navbar.js'
+// import { Transformation } from './graphical/Transformation.js'
+// import { PseudoGif } from './graphical/PseudoGif.js'
+import { Transformation, PseudoGif } from 'emoterizer-transformations'
+import { TransformationDisplay, TransformationSelector, TransformationValueSliders } from './TransformationWidgets.js'
+import { HeadBar } from './Navbar.js'
 import Container from 'react-bootstrap/Container'
 import Card from 'react-bootstrap/Card'
 import { BitmapImage, GifCodec, GifFrame } from 'gifwrap'
+console.log(Transformation)
 const defaultLanguage = 'EN'
 // TODO colocar outra classe pra fazer a transformacao antes e rerenderizr
-
+const defaultWidth = 128
+const defaultHeight = 128
 class ImageInput extends React.Component {
   constructor (props) {
     super(props)

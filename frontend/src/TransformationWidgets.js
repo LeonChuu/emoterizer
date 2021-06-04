@@ -1,14 +1,13 @@
 
 import React from 'react'
 import Card from 'react-bootstrap/Card'
-import {
-  zoomImageDefaultZoom,
-  rollImageDefaultSpeed,
-  speedImageDefaultDelay,
-  genkiImageDefaultSpeed,
-  imageDefaultInterval,
-  defaultWidth
-} from '../utils/defaultsAndConstants.js'
+const zoomImageDefaultZoom = 5
+const rollImageDefaultSpeed = 10
+const genkiImageDefaultSpeed = 5
+const imageDefaultInterval = 0
+const defaultWidth = 128
+const speedImageDefaultDelay = 2
+
 export class TransformationSelector extends React.Component {
   constructor () {
     super()
