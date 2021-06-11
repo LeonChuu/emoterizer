@@ -2,11 +2,9 @@
   "name": "giffer",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "discord": "file:./discord",
-    "emoterizer-transformations": "file:./emoterizer-transformations",
-    "frontend": "file:./frontend"
-  },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -30,5 +28,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "queue-microtask": "^1.2.3"
   }
 }
