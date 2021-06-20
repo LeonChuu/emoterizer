@@ -5,6 +5,7 @@ const imageDefaultInterval = 0
 const defaultWidth = 128
 const defaultHeight = 128
 const speedImageDefaultDelay = 2
+const gifwrapDefaultDelay = 8
 
 module.exports = {
 zoomImageDefaultZoom,
@@ -13,5 +14,6 @@ genkiImageDefaultSpeed,
 imageDefaultInterval,
 defaultWidth,
 defaultHeight,
-speedImageDefaultDelay
+speedImageDefaultDelay,
+gifwrapDefaultDelay
 }

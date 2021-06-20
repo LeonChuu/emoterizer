@@ -7,8 +7,16 @@ import { PseudoGif } from './PseudoGif.js'
 let Jimptest = require('jimp')
 const Jimp = Jimptest.__esModule === true ? Jimptest.default : Jimptest
 const { GifFrame, BitmapImage, GifUtil, GifCodec } = require('gifwrap')
-const { zoomImageDefaultZoom, rollImageDefaultSpeed, genkiImageDefaultSpeed, imageDefaultInterval, defaultHeight, defaultWidth } = require('./defaultsAndConstants.js')
-const  PseudoGif = require('./PseudoGif.js')
+const {
+  zoomImageDefaultZoom,
+  rollImageDefaultSpeed,
+  genkiImageDefaultSpeed,
+  imageDefaultInterval,
+  defaultHeight,
+  defaultWidth,
+  gifwrapDefaultDelay
+} = require('./defaultsAndConstants.js')
+const PseudoGif = require('./PseudoGif.js')
 class Transformation {
   static transform (image, transformation, value) {
     const transformMap = {
@@ -57,6 +65,7 @@ class Transformation {
     const squishVal = (Math.max(0, (100 - Math.abs(squishArg)) / 100.0))
     const yOffset = Math.max(0, Math.abs(offsetArg))
     const length = gif.frames.length
+    const delay = values.delay || gifwrapDefaultDelay
 
     const inputFrameList = gif.frames.map(frame => GifUtil.copyAsJimp(Jimp, frame))
     const squishFactor = [[1.0, 1.0], [1.1 / squishVal, 0.98 * squishVal], [1.2 / squishVal, 0.95 * squishVal], [1.1 / squishVal, 0.96 * squishVal]]
@@ -73,7 +82,11 @@ class Transformation {
       return new GifFrame(new BitmapImage(original.composite(GifUtil.copyAsJimp(Jimp, frame), 0, handHeightOffset).bitmap))
       // return new GifFrame(new BitmapImage(frame))
     })
-    return new PseudoGif(outputFrameList, gif.height, gif.width)
+    const outputGif = new PseudoGif(outputFrameList, gif.height, gif.width)
+
+    if (delay !== gifwrapDefaultDelay) {
+      return this.speedImage(outputGif, { delay })
+    }
   }
   /*
   static async blitImage (image, values) {
@@ -92,8 +105,6 @@ class Transformation {
   static async flipImage (gif, values) {
     const horizontal = values.horizontal || false
     const vertical = values.vertical || false
-		console.log(Jimp)
-		console.log(Jimp.default)
     const frameList = gif.frames.map(frame => new GifFrame(
       new BitmapImage(
         GifUtil.copyAsJimp(Jimp, frame).flip(horizontal, vertical).bitmap)))
