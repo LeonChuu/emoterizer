@@ -12,7 +12,7 @@ const token = process.env.TOKEN
 
 const client = new Discord.Client()
 
-const prefix = '.yv'
+const prefix = process.env.EMOTERIZER_PREFIX || '.yv'
 const re = /\s+/
 const emojiRE = /^<.*>$/
 const emojiSplitRE = /:|>/
