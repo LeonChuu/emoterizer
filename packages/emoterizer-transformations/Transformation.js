@@ -85,8 +85,9 @@ class Transformation {
     const outputGif = new PseudoGif(outputFrameList, gif.height, gif.width)
 
     if (delay !== gifwrapDefaultDelay) {
-      return this.speedImage(outputGif, { delay })
-    }
+      outputGif = this.speedImage(outputGif, { delay })
+		}
+		return outputGif
   }
   /*
   static async blitImage (image, values) {
