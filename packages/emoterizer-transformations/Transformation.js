@@ -82,7 +82,7 @@ class Transformation {
       return new GifFrame(new BitmapImage(original.composite(GifUtil.copyAsJimp(Jimp, frame), 0, handHeightOffset).bitmap))
       // return new GifFrame(new BitmapImage(frame))
     })
-    const outputGif = new PseudoGif(outputFrameList, gif.height, gif.width)
+    let outputGif = new PseudoGif(outputFrameList, gif.height, gif.width)
 
     if (delay !== gifwrapDefaultDelay) {
       outputGif = this.speedImage(outputGif, { delay })
