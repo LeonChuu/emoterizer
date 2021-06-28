@@ -66,7 +66,6 @@ class Transformation {
     const yOffset = Math.max(0, Math.abs(offsetArg))
     const length = gif.frames.length
     const delay = values.delay || gifwrapDefaultDelay
-
     const inputFrameList = gif.frames.map(frame => GifUtil.copyAsJimp(Jimp, frame))
     const squishFactor = [[1.0, 1.0], [1.1 / squishVal, 0.98 * squishVal], [1.2 / squishVal, 0.95 * squishVal], [1.1 / squishVal, 0.96 * squishVal]]
     const background = GifUtil.copyAsJimp(Jimp, new BitmapImage(defaultHeight, defaultWidth, 0))
@@ -85,6 +84,7 @@ class Transformation {
     let outputGif = new PseudoGif(outputFrameList, gif.height, gif.width)
 
     if (delay !== gifwrapDefaultDelay) {
+			console.log(delay)
       outputGif = this.speedImage(outputGif, { delay })
 		}
 		return outputGif
@@ -284,9 +284,15 @@ class Transformation {
     return 4 * frameList[0].bitmap.width * frameList[0].bitmap.height * length
   }
 
-  static generateGif (gif) {
+  static async generateGif (gif) {
+    const originalSpeed = gif.frames[0].delayCentisecs
+    console.log(originalSpeed)
     GifUtil.quantizeSorokin(gif.frames, 256, 'top-pop')
-    return new GifCodec().encodeGif(gif.frames)
+    const newGif = await new GifCodec().encodeGif(gif.frames)
+	  newGif.frames.forEach(frame => {
+      frame.delayCentisecs = originalSpeed
+    })
+    return newGif
   }
 
   static resizeDown (gif) {

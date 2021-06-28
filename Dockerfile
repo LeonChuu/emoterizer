@@ -1,7 +1,6 @@
 FROM node
 WORKDIR /opt
 COPY package.json /opt 
-RUN ["mkdir", "/opt/packages{discord,emoterizer-transformations}", "-p"]
 COPY ./packages/discord /opt/packages/discord
 COPY ./packages/emoterizer-transformations /opt/packages/emoterizer-transformations
 RUN ["npm", "i"]
