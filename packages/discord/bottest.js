@@ -147,17 +147,17 @@ client.on('message', async message => {
           console.log(emoji)
           const emojiNumber = emoji[2]
           const emojiName = emoji[1]
-          console.log(discordEmojiURL + emojiNumber + '.png')
-          let emojiURL = discordEmojiURL + emojiNumber + '.png'
+          const emojiURLPNG = discordEmojiURL + emojiNumber + '.png'
+          const emojiURLGIF = discordEmojiURL + emojiNumber + '.gif'
+          console.log(emojiURLPNG)
           let image
           try {
-            image = await codec.decodeGif(Buffer.from((await got(emojiURL)).rawBody.buffer))
+            image = await codec.decodeGif(Buffer.from((await got(emojiURLPNG)).rawBody.buffer))
           } catch {
             try {
-              emojiURL = discordEmojiURL + emojiNumber + '.gif'
-              image = await codec.decodeGif(Buffer.from((await got(emojiURL)).rawBody.buffer))
+              image = await codec.decodeGif(Buffer.from((await got(emojiURLGIF)).rawBody.buffer))
             } catch {
-              const jimpImage = await Jimp.read(emojiURL)
+              const jimpImage = await Jimp.read(emojiURLPNG)
               image = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
             }
           }
