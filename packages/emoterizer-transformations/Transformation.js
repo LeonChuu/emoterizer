@@ -84,10 +84,10 @@ class Transformation {
     let outputGif = new PseudoGif(outputFrameList, gif.height, gif.width)
 
     if (delay !== gifwrapDefaultDelay) {
-			console.log(delay)
+      console.log(delay)
       outputGif = this.speedImage(outputGif, { delay })
-		}
-		return outputGif
+    }
+    return outputGif
   }
   /*
   static async blitImage (image, values) {
@@ -194,7 +194,7 @@ class Transformation {
   }
 
   static async speedImage (gif, values) {
-    const speed = parseInt(values.delay) || 1
+    const speed = parseFloat(values.delay) || 1
     const outputFrameList = []
     gif.frames.forEach(frame => {
       frame.delayCentisecs = speed
@@ -297,7 +297,13 @@ class Transformation {
 
   static resizeDown (gif) {
     if ((gif.width !== defaultWidth) && (gif.height !== defaultHeight)) {
-      const frames = gif.frames.map(frame => new GifFrame(GifUtil.copyAsJimp(Jimp, frame.bitmap).resize(defaultHeight, defaultWidth).bitmap))
+      const originalDelay = gif.frames[0].delayCentisecs
+      console.log(originalDelay)
+      const frames = gif.frames.map(frame => {
+        const newFrame = new GifFrame(GifUtil.copyAsJimp(Jimp, frame.bitmap).resize(defaultHeight, defaultWidth).bitmap)
+        newFrame.delayCentisecs = originalDelay
+        return newFrame
+      })
       return new PseudoGif(frames, defaultHeight, defaultWidth)
     } else {
       return gif
