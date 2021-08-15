@@ -21,14 +21,13 @@ const pat = GifUtil.read(path.resolve(__dirname, 'pat.gif'))
 
 // TODO get values from command
 // const values = {}
-function getSizeText(size) {
+function getSizeText (size) {
   const sizeText = ('Gif size is: ' + size.toFixed(1) + 'KB')
   const optionalText = ((size) > 250)
     ? ' and will not be able to be used as an emote due to being over 250KB'
     : ''
   return sizeText + optionalText
 }
-
 
 const commands = {
   test: (message) => {
