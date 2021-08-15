@@ -23,10 +23,6 @@ class Flip {
         GifUtil.copyAsJimp(Jimp, frame).flip(horizontal, vertical).bitmap)))
     return new PseudoGif(frameList, gif.height, gif.width)
   }
-
-  static async helpText () {
-    return 'Flips a image.\n Options:\n direction (horizontal|vertical|both) - direction in which the image will be flipped. \n '
-  }
 }
 
 module.exports = { Flip }

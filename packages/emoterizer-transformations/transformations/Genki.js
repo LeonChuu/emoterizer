@@ -35,9 +35,5 @@ class Genki {
     }
     return new PseudoGif(frameList, height, width)
   }
-
-  static async help () {
-    return 'Applies a sliding effect to an image.\n Options:\n interval - empty space between frames in pixels.\n speed - sliding speed. '
-  }
 }
 module.exports = { Genki }

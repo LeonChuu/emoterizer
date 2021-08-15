@@ -37,10 +37,6 @@ class Pat {
     }
     return outputGif
   }
-
-  static async help () {
-    return 'Headpats an image.\n Options:\n squish (0 to 100)\n offset (0 to 125)'
-  }
 }
 
 module.exports = { Pat }

@@ -41,10 +41,6 @@ class Roll {
     }
     return new PseudoGif(frameList, height, width)
   }
-
-  static help () {
-    return 'Applies a rolling effect.\n Options:\n rotationspeed\n speed\n'
-  }
 }
 
 module.exports = { Roll }

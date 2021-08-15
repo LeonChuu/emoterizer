@@ -18,10 +18,6 @@ class Rotate {
     }
     return new PseudoGif(frameList, gif.height, gif.width)
   }
-
-  static async helpText () {
-    return 'Applies a rotating effect.\n Options:\n rotationspeed\n'
-  }
 }
 
 module.exports = { Rotate }

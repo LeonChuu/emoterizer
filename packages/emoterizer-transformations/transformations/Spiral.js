@@ -27,10 +27,6 @@ class Spiral {
     }
     return new PseudoGif(outputFrameList, height, width)
   }
-
-  static async helpText () {
-    return 'Applies a spiral effect to an image.\n Options:\n rotationspeed\n zoom'
-  }
 }
 
 module.exports = { Spiral }

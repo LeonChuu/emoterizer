@@ -28,10 +28,6 @@ class Zoom {
 
     return new PseudoGif(outputFrameList, height, width)
   }
-
-  static async helpText () {
-    return 'Applies a zooming effect to an image.\n Options:\n zoom - zooming power/speed'
-  }
 }
 
 module.exports = { Zoom }
