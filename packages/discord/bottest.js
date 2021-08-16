@@ -19,6 +19,18 @@ const emojiSplitRE = /:|>/
 const discordEmojiURL = 'https://cdn.discordapp.com/emojis/'
 const pat = GifUtil.read(path.resolve(__dirname, 'pat.gif'))
 
+const helpText = {
+  flip: 'Flips a image.\n Options:\n direction (horizontal|vertical|both) - direction in which the image will be flipped. \n ',
+  genki: 'Applies a sliding effect to an image.\n Options:\n interval - empty space between frames in pixels.\n speed - sliding speed. ',
+  pat: 'Headpats an image.\n Options:\n squish (0 to 100)\n offset (0 to 125)',
+  roll: 'Applies a rolling effect.\n Options:\n rotationspeed\n speed\n',
+  rotate: 'Applies a rotating effect.\n Options:\n rotationspeed\n',
+  speed: 'Speeds up an gif.\n Options:\n delay ( 2 to 100) - delay between frames in centisecs.',
+  spiral: 'Applies a spiral effect to an image.\n Options:\n rotationspeed\n zoom',
+  zoom: 'Applies a zooming effect to an image.\n Options:\n zoom - zooming power/speed'
+
+}
+
 // TODO get values from command
 // const values = {}
 function getSizeText (size) {
@@ -27,6 +39,13 @@ function getSizeText (size) {
     ? ' and will not be able to be used as an emote due to being over 250KB'
     : ''
   return sizeText + optionalText
+}
+
+function sendEmbedMessage (message, text) {
+  const embed = new Discord.MessageEmbed()
+  embed.addField('', text)
+  embed.setColor([255, 0, 255])
+  message.channel.send(embed)
 }
 
 const commands = {
@@ -39,7 +58,8 @@ const commands = {
   help: (message) => {
     // grayscale - Converts the image to grayscale.
     const text = `
-      usage: send an image with the message ${prefix} {command} .
+      usage: send an image with the message ${prefix} <command>  <emote>.
+      You can send the emote as an attachment as well.
 
       commands:
       fliphorizontal - Flips the image horizontally.
@@ -50,7 +70,7 @@ const commands = {
       spiral - Creates a GIF with a spiral effect.
       zoom - Creates a GIF with a zooming effect.
     `
-    message.channel.send(text)
+    sendEmbedMessage(text)
   },
   fliphorizontal: async (message, image) => {
     return Transformation.transform(image, 'flipHorizontal')
@@ -90,6 +110,9 @@ client.login(token)
 const codec = new GifCodec()
 client.on('message', async message => {
   const args = parseInput(message.content)
+  let hasImageToTransform = false
+  let image
+  let outputName
 
   console.log(args)
   if (args.prefixed) {
@@ -109,76 +132,69 @@ client.on('message', async message => {
     }
 
     if (message.attachments.size !== 0) {
-      message.attachments.forEach(async attachment => {
-        if (attachment.height != null) {
-          console.log(args)
-          const emojiURL = attachment.proxyURL
-          let image
-          try {
-            image = await codec.decodeGif(Buffer.from((await got(emojiURL)).rawBody.buffer))
-          } catch {
-            const jimpImage = await Jimp.read(emojiURL)
-            image = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
-          }
-          image = Transformation.resizeDown(image)
-          const transformedImage = await commands[command](message, image, args)
-          const gif = await Transformation.generateGif(transformedImage)
-          const emojiName = attachment.name
-          // TODO change the attachment name to something better
-          const gifSize = gif.buffer.byteLength / 1024
-
-          message.channel.send(getSizeText(gifSize), {
-
-            files: [{
-              attachment: gif.buffer,
-              name: command + emojiName + '.gif'
-            }]
-          })
+      // Using only the first image in the attachment array.
+      const attachment = message.attachments.first()
+      outputName = attachment.name
+      if (attachment.height != null) {
+        console.log(args)
+        const emojiURL = attachment.proxyURL
+        try {
+          image = await codec.decodeGif(Buffer.from((await got(emojiURL)).rawBody.buffer))
+        } catch {
+          const jimpImage = await Jimp.read(emojiURL)
+          image = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
         }
-      })
+      }
+      hasImageToTransform = true
     } else if ((args.remainingArg != null) && (args.remainingArg.search(emojiRE) != null)) {
       const emojiMatch = args.remainingArg.match(emojiRE)
       if (emojiMatch != null) {
-        if (command === 'speed') {
-          message.channel.send('Send the emoji in an attachment, inline not available for now.')
-        } else {
-          const emoji = emojiMatch[0].split(emojiSplitRE)
-          console.log(emoji)
-          const emojiNumber = emoji[2]
-          const emojiName = emoji[1]
-          const emojiURLPNG = discordEmojiURL + emojiNumber + '.png'
-          const emojiURLGIF = discordEmojiURL + emojiNumber + '.gif'
-          console.log(emojiURLPNG)
-          let image
+        const emoji = emojiMatch[0].split(emojiSplitRE)
+        console.log(emoji)
+        const emojiNumber = emoji[2]
+        outputName = emoji[1]
+        const emojiURLPNG = discordEmojiURL + emojiNumber + '.png'
+        const emojiURLGIF = discordEmojiURL + emojiNumber + '.gif'
+        console.log(emojiURLPNG)
+        try {
+          image = await codec.decodeGif(Buffer.from((await got(emojiURLPNG)).rawBody.buffer))
+        } catch {
           try {
-            image = await codec.decodeGif(Buffer.from((await got(emojiURLPNG)).rawBody.buffer))
+            image = await codec.decodeGif(Buffer.from((await got(emojiURLGIF)).rawBody.buffer))
           } catch {
-            try {
-              image = await codec.decodeGif(Buffer.from((await got(emojiURLGIF)).rawBody.buffer))
-            } catch {
-              const jimpImage = await Jimp.read(emojiURLPNG)
-              image = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
-            }
+            const jimpImage = await Jimp.read(emojiURLPNG)
+            image = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
           }
-          image = Transformation.resizeDown(image)
-          const transformedImage = await commands[command](message, image, args)
-          const gif = await Transformation.generateGif(transformedImage)
-          const gifSize = gif.buffer.byteLength / 1024
-
-          // TODO change the attachment name to something better
-          message.channel.send(getSizeText(gifSize), {
-            files: [{
-              attachment: gif.buffer,
-              name: command + emojiName + '.gif'
-            }]
-          })
         }
+        console.log(image)
+        hasImageToTransform = true
       } else {
         message.channel.send('Only custom emotes are allowed.')
       }
       console.log(args.remainingArg)
     } else {
       commands[command](message)
+    }
+    console.log(hasImageToTransform)
+    if (hasImageToTransform) {
+      image = Transformation.resizeDown(image)
+      let transformedImage
+      try {
+        transformedImage = await commands[command](message, image, args)
+      } catch (ex) {
+        message.channel.send(ex.message)
+        return
+      }
+      const gif = await Transformation.generateGif(transformedImage)
+      const gifSize = gif.buffer.byteLength / 1024
+
+      // TODO change the attachment name to something better
+      message.channel.send(getSizeText(gifSize), {
+        files: [{
+          attachment: gif.buffer,
+          name: command + outputName + '.gif'
+        }]
+      })
     }
   }
 })
