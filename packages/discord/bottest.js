@@ -87,10 +87,10 @@ const commands = {
     sendEmbedMessage(message, 'Help', helpResponse)
   },
   fliphorizontal: async (message, image) => {
-    return Transformation.transform(image, 'flipHorizontal')
+    return Transformation.transform(image, 'flip', { direction: 'horizontal' })
   },
   flipvertical: async (message, image) => {
-    return Transformation.transform(image, 'flipVertical')
+    return Transformation.transform(image, 'flip', { direction: 'vertical' })
   },
   grayscale: async (message, image, values) => {
     return Transformation.transform(image, 'grayscale', values)
@@ -209,6 +209,7 @@ client.on('message', async message => {
       } catch (ex) {
         message.channel.send(ex.message)
         console.error(ex.message)
+        console.error(ex.stack)
         return
       }
       const gif = await Transformation.generateGif(transformedImage)
