@@ -22,6 +22,7 @@ const pat = GifUtil.read(path.resolve(__dirname, 'pat.gif'))
 const helpText = `
       usage: send an image with the message ${prefix} <command> [<options>] <emote>.
       You can send the emote as an attachment as well.
+      Run ${prefix} <command> to get options for each command.
 
       Commands:
       fliphorizontal - Flips the image horizontally.
