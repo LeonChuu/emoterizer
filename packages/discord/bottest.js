@@ -19,8 +19,26 @@ const emojiSplitRE = /:|>/
 const discordEmojiURL = 'https://cdn.discordapp.com/emojis/'
 const pat = GifUtil.read(path.resolve(__dirname, 'pat.gif'))
 
-const helpText = {
-  flip: 'Flips a image.\n Options:\n direction (horizontal|vertical|both) - direction in which the image will be flipped. \n ',
+const helpText = `
+      usage: send an image with the message ${prefix} <command> [<options>] <emote>.
+      You can send the emote as an attachment as well.
+
+      Commands:
+      fliphorizontal - Flips the image horizontally.
+      flipvertical - Flips the image vertically.
+      genki - Genkis the image.
+      roll - Creates a GIF with a rolling effect.
+      spin - Creates a GIF with a spinning effect.
+      spiral - Creates a GIF with a spiral effect.
+      zoom - Creates a GIF with a zooming effect.
+
+      Example:
+
+      ${prefix} pat offset 10 :awau:
+    `
+const helpTextCommands = {
+  flipvertical: 'Flips a image vertically. \n ',
+  fliphorizontal: 'Flips a image horizontally. \n ',
   genki: 'Applies a sliding effect to an image.\n Options:\n interval - empty space between frames in pixels.\n speed - sliding speed. ',
   pat: 'Headpats an image.\n Options:\n squish (0 to 100)\n offset (0 to 125)',
   roll: 'Applies a rolling effect.\n Options:\n rotationspeed\n speed\n',
@@ -41,9 +59,9 @@ function getSizeText (size) {
   return sizeText + optionalText
 }
 
-function sendEmbedMessage (message, text) {
+function sendEmbedMessage (message, fieldName, text) {
   const embed = new Discord.MessageEmbed()
-  embed.addField('', text)
+  embed.addField(fieldName, text)
   embed.setColor([255, 0, 255])
   message.channel.send(embed)
 }
@@ -57,20 +75,15 @@ const commands = {
   },
   help: (message) => {
     // grayscale - Converts the image to grayscale.
-    const text = `
-      usage: send an image with the message ${prefix} <command>  <emote>.
-      You can send the emote as an attachment as well.
-
-      commands:
-      fliphorizontal - Flips the image horizontally.
-      flipvertical - Flips the image vertically.
-      genki - Genkis the image.
-      roll - Creates a GIF with a rolling effect.
-      spin - Creates a GIF with a spinning effect.
-      spiral - Creates a GIF with a spiral effect.
-      zoom - Creates a GIF with a zooming effect.
-    `
-    sendEmbedMessage(text)
+    const commandRequest = message.content.split(re)[2]
+    let helpResponse = helpText
+    if (commandRequest != null) {
+      helpResponse = helpTextCommands[commandRequest]
+      if (helpResponse == null) {
+        helpResponse = 'Subcommand not found.'
+      }
+    }
+    sendEmbedMessage(message, 'Help', helpResponse)
   },
   fliphorizontal: async (message, image) => {
     return Transformation.transform(image, 'flipHorizontal')
@@ -130,7 +143,6 @@ client.on('message', async message => {
     if (command === 'pat') {
       args.pat = await pat
     }
-
     if (message.attachments.size !== 0) {
       // Using only the first image in the attachment array.
       const attachment = message.attachments.first()
@@ -146,7 +158,7 @@ client.on('message', async message => {
         }
       }
       hasImageToTransform = true
-    } else if ((args.remainingArg != null) && (args.remainingArg.search(emojiRE) != null)) {
+    } else if ((args.remainingArg != null) && (args.remainingArg.search(emojiRE) >= 0)) {
       const emojiMatch = args.remainingArg.match(emojiRE)
       if (emojiMatch != null) {
         const emoji = emojiMatch[0].split(emojiSplitRE)
@@ -173,16 +185,29 @@ client.on('message', async message => {
       }
       console.log(args.remainingArg)
     } else {
-      commands[command](message)
+      try {
+        await commands[command](message)
+      } catch (ex) {
+        message.channel.send('Invalid command.')
+        console.error(ex)
+        console.error('Command: ' + command)
+      }
     }
     console.log(hasImageToTransform)
     if (hasImageToTransform) {
-      image = Transformation.resizeDown(image)
+      try {
+        image = Transformation.resizeDown(image)
+      } catch (ex) {
+        message.channel.send('Invalid image.')
+        console.error(ex.message)
+        return
+      }
       let transformedImage
       try {
         transformedImage = await commands[command](message, image, args)
       } catch (ex) {
         message.channel.send(ex.message)
+        console.error(ex.message)
         return
       }
       const gif = await Transformation.generateGif(transformedImage)
