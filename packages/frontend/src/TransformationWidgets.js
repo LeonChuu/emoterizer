@@ -184,6 +184,7 @@ export class TransformationValueSliders extends React.Component {
           speed: 'Speed',
           rotation: 'Rotation',
           interval: 'Interval',
+          intensity: 'Intensity',
           squish: 'Squish'
         },
         BR: {
@@ -192,6 +193,7 @@ export class TransformationValueSliders extends React.Component {
           speed: 'Velocidade',
           rotation: 'Rotação',
           interval: 'Interval',
+          intensity: 'Intensidade',
           squish: 'Elasticidade'
         }
       }
@@ -233,6 +235,12 @@ export class TransformationValueSliders extends React.Component {
       displayAndImage = (
         <div class='row'>
           <RangeValueSelector onValueChange={this.props.onValueChange} min={1} max={99} parameter='squish' value='10' title={text.squish} />
+        </div>
+      )
+    } else if (this.props.transformationType === 'shake') {
+      displayAndImage = (
+        <div class='row'>
+          <RangeValueSelector onValueChange={this.props.onValueChange} min={1} max={100} parameter='intensity' value='50' title={text.intensity} />
         </div>
       )
     } else if (this.props.transformationType === 'speed') {

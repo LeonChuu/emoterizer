@@ -13,23 +13,24 @@ const {
 } = require('./defaultsAndConstants.js')
 const PseudoGif = require('./PseudoGif.js')
 const { Flip } = require('./transformations/Flip.js')
+const { Genki } = require('./transformations/Genki.js')
+const { Shake } = require('./transformations/Shake.js')
+const { Speed } = require('./transformations/Speed.js')
 const { Pat } = require('./transformations/Pat.js')
+const { Roll } = require('./transformations/Roll.js')
 const { Rotate } = require('./transformations/Rotate.js')
 const { Spiral } = require('./transformations/Spiral.js')
-const { Genki } = require('./transformations/Genki.js')
 const { Zoom } = require('./transformations/Zoom.js')
-const { Roll } = require('./transformations/Roll.js')
-const { Speed } = require('./transformations/Speed.js')
 
 const transformMap = {
   flip: Flip,
-  pat: Pat,
   rotate: Rotate,
   spiral: Spiral,
   genki: Genki,
   zoom: Zoom,
   roll: Roll,
-  pet: Pat,
+  pat: Pat,
+  shake: Shake,
   spin: Rotate,
   speed: Speed
 }

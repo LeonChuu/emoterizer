@@ -2,9 +2,11 @@ const Jimptest = require('jimp')
 const Jimp = Jimptest.__esModule === true ? Jimptest.default : Jimptest
 const { GifFrame, BitmapImage, GifUtil } = require('gifwrap')
 const PseudoGif = require('../PseudoGif.js')
+
+const rotationLimit = 360
+
 class Rotate {
   static async transform (gif, options) {
-    const rotationLimit = 360
     const rotationSpeed = options.rotationspeed || 50
     const step = -(rotationSpeed * 1.8) || -2
     const length = gif.frames.length
