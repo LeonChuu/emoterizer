@@ -13,20 +13,26 @@ class Zoom {
     const height = gif.height
 
     const outputFrameList = []
-    let reframedImage
 
     for (let position = 10, frameIndex = 0; (position < (width / 2)) &&
     (position < (height / 2)); position += zoom, frameIndex = (frameIndex + 1) % gif.frames.length) {
-      const image = GifUtil.copyAsJimp(Jimp, gif.frames[frameIndex])
+      const zoomedImage = this.zoom(gif.frames[frameIndex], position, position)
 
-      reframedImage = GifUtil.copyAsJimp(Jimp, new BitmapImage(image.bitmap)
-        .reframe(position, position, width - position * 2, height - position * 2))
-      reframedImage.contain(height, width)
-
-      outputFrameList.push(new GifFrame(new BitmapImage(reframedImage.bitmap)))
+      outputFrameList.push(new GifFrame(new BitmapImage(zoomedImage.bitmap)))
     }
 
     return new PseudoGif(outputFrameList, height, width)
+  }
+
+  static zoom (frame, verticalDist, horizontalDist) {
+    const image = GifUtil.copyAsJimp(Jimp, frame)
+    const width = image.bitmap.width
+    const height = image.bitmap.height
+
+    const reframedImage = GifUtil.copyAsJimp(Jimp, new BitmapImage(image.bitmap)
+      .reframe(horizontalDist, verticalDist, width - horizontalDist * 2, height - verticalDist * 2, 0))
+    reframedImage.contain(height, width)
+    return reframedImage
   }
 }
 
