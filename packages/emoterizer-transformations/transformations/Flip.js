@@ -12,12 +12,11 @@ class Flip {
       horizontal = true
     } else if (direction === 'vertical') {
       vertical = true
-    } else if (direction === 'both') {
+    } else {
       horizontal = true
       vertical = true
-    } else {
-      throw Error('Invalid direction option.')
     }
+
     const frameList = gif.frames.map(frame => new GifFrame(
       new BitmapImage(
         GifUtil.copyAsJimp(Jimp, frame).flip(horizontal, vertical).bitmap)))

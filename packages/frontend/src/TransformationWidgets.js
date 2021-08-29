@@ -12,11 +12,10 @@ export class TransformationSelector extends React.Component {
   constructor () {
     super()
     this.state = {
-      transformation: 'flipHorizontal',
+      transformation: 'flip',
       text: {
         EN: {
-          vertical: 'Vertical',
-          horizontal: 'Horizontal',
+          flip: 'Flip',
           grayscale: 'Grayscale',
           rotate: 'Spin',
           genki: 'Genki',
@@ -24,11 +23,11 @@ export class TransformationSelector extends React.Component {
           zoom: 'Zoom',
           roll: 'Roll',
           speed: 'Speed',
-          pat: 'Headpat'
+          pat: 'Headpat',
+          shake: 'Shake'
         },
         BR: {
-          vertical: 'Vertical',
-          horizontal: 'Horizontal',
+          flip: 'Virar',
           grayscale: 'Grayscale',
           rotate: 'Girar',
           genki: 'Genki',
@@ -61,14 +60,14 @@ export class TransformationSelector extends React.Component {
             }
           }
           >
-            <option value='flipVertical'> {text.vertical} </option>
-            <option value='flipHorizontal'>{text.horizontal}</option>
+            <option value='flip'> {text.flip} </option>
             <option value='grayscale'>{text.grayscale}</option>
             <option value='rotate'>{text.rotate}</option>
             <option value='spiral'>{text.spiral}</option>
             <option value='zoom'>{text.zoom}</option>
             <option value='genki'>{text.genki}</option>
             <option value='roll'>{text.roll}</option>
+            <option value='shake'>{text.shake}</option>
             <option value='speed'>{text.speed}</option>
             <option value='pat'>{text.pat}</option>
           </select>
@@ -177,7 +176,7 @@ export class TransformationValueSliders extends React.Component {
   constructor () {
     super()
     this.state = {
-      transformation: 'flipHorizontal',
+      transformation: 'flip',
       text: {
         EN: {
           rotationSpeed: 'Speed',
