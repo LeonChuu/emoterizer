@@ -35,7 +35,6 @@ class Pat {
     let outputGif = new PseudoGif(outputFrameList, gif.height, gif.width)
 
     if (delay !== gifwrapDefaultDelay) {
-      console.log(delay)
       outputGif = this.speedImage(outputGif, { delay })
     }
     return outputGif

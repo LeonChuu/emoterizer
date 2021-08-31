@@ -2,6 +2,7 @@ const Jimptest = require('jimp')
 const Jimp = Jimptest.__esModule === true ? Jimptest.default : Jimptest
 const { GifFrame, BitmapImage, GifUtil } = require('gifwrap')
 const PseudoGif = require('../PseudoGif.js')
+const { gifwrapDefaultDelay } = require('../defaultsAndConstants.js')
 
 // star-shaped movement for the shakes
 const movement = [[1, 0], [-1, -1], [0, 1], [1, 0], [-1, 1]]
@@ -9,6 +10,7 @@ const movement = [[1, 0], [-1, -1], [0, 1], [1, 0], [-1, 1]]
 class Shake {
   static transform (gif, options) {
     const intensity = Math.abs(parseInt(options.intensity)) || 1
+    const delay = options.delay || gifwrapDefaultDelay
 
     const width = gif.width
     const height = gif.height
@@ -32,7 +34,11 @@ class Shake {
       outputFrameList.push(new GifFrame(shakenFrame))
     }
 
-    return new PseudoGif(outputFrameList, height, width)
+    let outputGif = new PseudoGif(outputFrameList, height, width)
+    if (delay !== gifwrapDefaultDelay) {
+      outputGif = this.speedImage(outputGif, { delay })
+    }
+    return outputGif
   }
 }
 
