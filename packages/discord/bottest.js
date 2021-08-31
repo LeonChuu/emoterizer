@@ -29,6 +29,7 @@ const helpText = `
       flipvertical - Flips the image vertically.
       genki - Genkis the image.
       roll - Creates a GIF with a rolling effect.
+      shake - Creates a gif with a tremor effect.
       spin - Creates a GIF with a spinning effect.
       spiral - Creates a GIF with a spiral effect.
       zoom - Creates a GIF with a zooming effect.
