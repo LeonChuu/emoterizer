@@ -3,6 +3,7 @@ const Jimp = Jimptest.__esModule === true ? Jimptest.default : Jimptest
 const { GifFrame, BitmapImage, GifUtil } = require('gifwrap')
 const PseudoGif = require('../PseudoGif.js')
 const { gifwrapDefaultDelay } = require('../defaultsAndConstants.js')
+const { Speed } = require('./Speed')
 
 class Pat {
   static async transform (gif, options) {
@@ -35,7 +36,7 @@ class Pat {
     let outputGif = new PseudoGif(outputFrameList, gif.height, gif.width)
 
     if (delay !== gifwrapDefaultDelay) {
-      outputGif = this.speedImage(outputGif, { delay })
+      outputGif = Speed.transform(outputGif, { delay })
     }
     return outputGif
   }

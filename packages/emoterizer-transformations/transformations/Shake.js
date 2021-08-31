@@ -3,6 +3,7 @@ const Jimp = Jimptest.__esModule === true ? Jimptest.default : Jimptest
 const { GifFrame, BitmapImage, GifUtil } = require('gifwrap')
 const PseudoGif = require('../PseudoGif.js')
 const { gifwrapDefaultDelay } = require('../defaultsAndConstants.js')
+const { Speed } = require('./Speed')
 
 // star-shaped movement for the shakes
 const movement = [[1, 0], [-1, -1], [0, 1], [1, 0], [-1, 1]]
@@ -11,7 +12,7 @@ class Shake {
   static transform (gif, { intensity = 1, delay = gifwrapDefaultDelay }) {
     const width = gif.width
     const height = gif.height
-    intensity = this.validateIntensity(Math.abs(parseInt(intensity), width, height))
+    intensity = this.validateIntensity(Math.abs(parseInt(intensity)), width, height)
 
     const outputFrameList = []
 
@@ -34,14 +35,15 @@ class Shake {
 
     let outputGif = new PseudoGif(outputFrameList, height, width)
     if (delay !== gifwrapDefaultDelay) {
-      outputGif = this.speedImage(outputGif, { delay })
+      outputGif = Speed.transform(outputGif, { delay })
     }
     return outputGif
   }
 
+  // TODO pass this validation outside. Not crucial to execution.
   static validateIntensity (intensity, width, height) {
     if ((intensity >= width) || (intensity >= height)) {
-      throw RangeError('Intensity must be smaller than height and width')
+      throw RangeError('Intensity must be smaller than height and width of image!')
     }
     return intensity
   }
