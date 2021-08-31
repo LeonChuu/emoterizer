@@ -8,12 +8,10 @@ const { gifwrapDefaultDelay } = require('../defaultsAndConstants.js')
 const movement = [[1, 0], [-1, -1], [0, 1], [1, 0], [-1, 1]]
 
 class Shake {
-  static transform (gif, options) {
-    const intensity = Math.abs(parseInt(options.intensity)) || 1
-    const delay = options.delay || gifwrapDefaultDelay
-
+  static transform (gif, { intensity = 1, delay = gifwrapDefaultDelay }) {
     const width = gif.width
     const height = gif.height
+    intensity = this.validateIntensity(Math.abs(parseInt(intensity), width, height))
 
     const outputFrameList = []
 
@@ -39,6 +37,13 @@ class Shake {
       outputGif = this.speedImage(outputGif, { delay })
     }
     return outputGif
+  }
+
+  static validateIntensity (intensity, width, height) {
+    if ((intensity >= width) || (intensity >= height)) {
+      throw RangeError('Intensity must be smaller than height and width')
+    }
+    return intensity
   }
 }
 

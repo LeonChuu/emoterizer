@@ -44,7 +44,8 @@ const helpTextCommands = {
   pat: 'Headpats an image.\n Options:\n squish (0 to 100)\n offset (0 to 125)',
   roll: 'Applies a rolling effect.\n Options:\n rotationspeed\n speed\n',
   rotate: 'Applies a rotating effect.\n Options:\n rotationspeed\n',
-  speed: 'Speeds up an gif.\n Options:\n delay ( 2 to 100) - delay between frames in centisecs.',
+  shake: 'Applies a tremor effect.\n Options:\n delay ( 1 to 100) - delay between frames in centisecs. \n intensity (1 to 124) - shaking intensity',
+  speed: 'Speeds up an gif.\n Options:\n delay ( 1 to 100) - delay between frames in centisecs.',
   spiral: 'Applies a spiral effect to an image.\n Options:\n rotationspeed\n zoom',
   zoom: 'Applies a zooming effect to an image.\n Options:\n zoom - zooming power/speed'
 
@@ -105,6 +106,9 @@ const commands = {
   },
   roll: async (message, image, values) => {
     return Transformation.transform(image, 'roll', values)
+  },
+  shake: async (message, image, values) => {
+    return Transformation.transform(image, 'shake', values)
   },
   speed: async (message, image, values) => {
     return Transformation.transform(image, 'speed', values)
