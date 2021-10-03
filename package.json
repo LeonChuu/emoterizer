@@ -30,6 +30,8 @@
     ]
   },
   "dependencies": {
+    "emoterizer-discord": "file:packages/discord",
+    "emoterizer-lambda": "file:packages/emoterizer-lambda",
     "queue-microtask": "^1.2.3"
   }
 }
