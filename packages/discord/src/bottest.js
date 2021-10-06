@@ -84,10 +84,15 @@ async function generateTransformedGif (imageData, args) {
 
 function sendTransformationMessage (message, gif, gifName) {
   const gifSize = gif.buffer.byteLength / 1024
+  const framesText = 'Frames: ' + gif.frames.length
+  const dimensionText = 'Dimensions: ' + gif.height + 'x' + gif.width
 
   // TODO change the attachment name to something better
   message.channel.send(null, {
-    embed: successEmbed.generateEmbed('Gif generated!', getSizeText(gifSize), 'attachment://' + gifName + '.gif'),
+    embed: successEmbed.generateEmbed('Gif generated!',
+      getSizeText(gifSize) + '\n' + framesText + '\n' + dimensionText)
+  })
+  message.channel.send({
     files: [{
       attachment: gif.buffer,
       name: gifName + '.gif'
