@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 const path = require('path')
 
 const { generateTransformedGif } = require('./src/image/ImageUtils')
-const { parseInput, getImage } = require('./src/util/DecodingUtils')
+const { parseInput, getImage, prefix } = require('./src/util/DecodingUtils')
 const { sendHelpMessage, sendTransformationMessage, sendErrorMessage } = require('./src/util/MessageUtils')
 const { GifUtil } = require('gifwrap')
 
@@ -41,9 +41,16 @@ client.on('message', async message => {
           imageData = await getImage(message, args)
           generatedGif = await generateTransformedGif(imageData, args)
         } catch (ex) {
+          let errorMessage = ex.message
+          if (ex.name === ReferenceError.name) {
+            if (args.remainingArg != null) {
+              errorMessage = 'Last argument should be a custom emote, but found ' + args.remainingArg + '\n' +
+              'type \'' + prefix + ' help\' for help!'
+            }
+          }
           console.error(ex)
           console.error('Command: ' + args.command)
-          sendErrorMessage(message, ex.message)
+          sendErrorMessage(message, errorMessage)
         }
         sendTransformationMessage(message, generatedGif, args.command + imageData.name)
     }

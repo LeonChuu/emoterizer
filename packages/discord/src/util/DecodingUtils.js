@@ -117,4 +117,4 @@ async function getImage (message, args) {
     throw new ReferenceError('No image was found')
   }
 }
-module.exports = { getImage, parseInput }
+module.exports = { getImage, parseInput, prefix }
