@@ -6,9 +6,9 @@ const PseudoGif = require('../PseudoGif.js')
 const rotationLimit = 360
 
 class Rotate {
-  static async transform (gif, options) {
-    const rotationSpeed = options.rotationspeed || 50
-    const step = -(rotationSpeed * 1.8) || -2
+  static async transform (gif, { rotationspeed }) {
+    rotationspeed = parseInt(rotationspeed) || 50
+    const step = -(rotationspeed * 1.8) || -2
     const length = gif.frames.length
     const frameList = []
     for (let i = 0, frameIndex = 0; Math.abs(i) < rotationLimit; i += step, frameIndex = (frameIndex + 1) % length) {

@@ -8,11 +8,14 @@ const { Speed } = require('./Speed')
 // star-shaped movement for the shakes
 const movement = [[1, 0], [-1, -1], [0, 1], [1, 0], [-1, 1]]
 
+const defaultShake = 4
+
 class Shake {
-  static transform (gif, { intensity = 1, delay = gifwrapDefaultDelay }) {
+  static transform (gif, { intensity = 1, delay }) {
+    delay = parseInt(delay) || gifwrapDefaultDelay
     const width = gif.width
     const height = gif.height
-    intensity = this.validateIntensity(Math.abs(parseInt(intensity)), width, height)
+    intensity = this.validateIntensity(Math.abs(parseInt(intensity)), width, height) || defaultShake
 
     const outputFrameList = []
 
@@ -43,7 +46,7 @@ class Shake {
   // TODO pass this validation outside. Not crucial to execution.
   static validateIntensity (intensity, width, height) {
     if ((intensity >= width) || (intensity >= height)) {
-      throw RangeError('Intensity must be smaller than height and width of image!')
+      throw RangeError('Intensity must be lower than height and width of image!')
     }
     return intensity
   }

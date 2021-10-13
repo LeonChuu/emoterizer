@@ -12,14 +12,14 @@ class Pat {
     const length = gif.frames.length
     const inputFrameList = gif.frames.map(frame => GifUtil.copyAsJimp(Jimp, frame))
 
-    const squishArg = options.squish || 0
-    const offsetArg = options.offset || 0
-    const delay = options.delay || gifwrapDefaultDelay
+    const squishArg = parseInt(options.squish) || 0
+    const offsetArg = parseInt(options.offset) || 0
+    const delay = parseInt(options.delay) || gifwrapDefaultDelay
     const toBlit = options.image.frames
 
     const squishVal = (Math.max(0, (100 - Math.abs(squishArg)) / 100.0))
     const yOffset = Math.max(0, Math.abs(offsetArg))
-    const squishFactor = [[1.0, 1.0], [1.1 / squishVal, 0.98 * squishVal], [1.2 / squishVal, 0.95 * squishVal], [1.1 / squishVal, 0.96 * squishVal]]
+    const squishFactor = [[1.0, 1.0], [1.1 / squishVal, 0.90 * squishVal], [1.2 / squishVal, 0.85 * squishVal], [1.1 / squishVal, 0.93 * squishVal]]
     const background = GifUtil.copyAsJimp(Jimp, new BitmapImage(height, width, 0))
 
     const outputFrameList = toBlit.map((frame, index) => {

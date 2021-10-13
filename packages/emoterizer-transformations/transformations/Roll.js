@@ -5,13 +5,14 @@ const PseudoGif = require('../PseudoGif.js')
 
 const { mod } = require('./TransformationUtil.js')
 
-const rollImageDefaultSpeed = 10
+const rollImageDefaultSpeed = 20
+const rollImageDefaultRotationSpeed = 40
 
 class Roll {
-  static async transform (gif, options) {
-    const rotationSpeed = options.rotationspeed || 50
-    const shift = options.speed || rollImageDefaultSpeed
-    const step = -(rotationSpeed * 1.8) || -2
+  static async transform (gif, { rotationspeed, speed }) {
+    rotationspeed = parseInt(rotationspeed) || rollImageDefaultRotationSpeed
+    const shift = parseInt(speed) || rollImageDefaultSpeed
+    const step = -(rotationspeed * 1.8) || -2
     const width = gif.width
     // const newWidth = image.bitmap.width + interval
     const newWidth = width * 3

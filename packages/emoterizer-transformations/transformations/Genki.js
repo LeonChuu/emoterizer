@@ -9,10 +9,10 @@ const genkiImageDefaultSpeed = 5
 const imageDefaultInterval = 0
 
 class Genki {
-  static async transform (gif, options) {
+  static async transform (gif, { interval, speed }) {
     const frameList = []
-    const interval = options.interval || imageDefaultInterval
-    const shift = options.speed || genkiImageDefaultSpeed
+    interval = parseInt(interval) || imageDefaultInterval
+    const shift = parseInt(speed) || genkiImageDefaultSpeed
 
     const width = gif.width
     const newWidth = gif.width + interval

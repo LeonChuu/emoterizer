@@ -6,8 +6,8 @@ const PseudoGif = require('../PseudoGif.js')
 const zoomImageDefaultZoom = 5
 
 class Zoom {
-  static async transform (gif, options) {
-    const zoom = options.zoom || zoomImageDefaultZoom
+  static async transform (gif, { zoom }) {
+    zoom = parseInt(zoom) || zoomImageDefaultZoom
 
     const width = gif.width
     const height = gif.height
