@@ -1,6 +1,7 @@
-const prefix = process.env.EMOTERIZER_PREFIX || '.yv'
+const prefix = process.env.EMOTERIZER_PREFIX ?? '.yv'
 const maxKbyteEmote = 250
-const helpText = `
+const maxKbyteText = maxKbyteEmote.toString()
+export const helpText = `
       usage: send an image with the message ${prefix} <command> [<options>] <emote>.
       You can send the emote as an attachment as well.
       Run ${prefix} help <command> to get options for each command.
@@ -19,7 +20,7 @@ const helpText = `
 
       ${prefix} pat offset 10 :awau:
     `
-const helpTextCommands = {
+export const helpTextCommands: Record<string, string> = {
   flipvertical: 'Flips a image vertically. \n ',
   fliphorizontal: 'Flips a image horizontally. \n ',
   genki: 'Applies a sliding effect to an image.\n Options:\n interval - empty space between frames in pixels.\n speed - sliding speed. ',
@@ -35,10 +36,10 @@ const helpTextCommands = {
 
 // TODO get values from command
 // const values = {}
-function getSizeText (size) {
+export function getSizeText (size: number): string {
   const sizeText = ('Gif size is: ' + size.toFixed(1) + 'KB')
   const optionalText = ((size) > maxKbyteEmote)
-    ? ' and will not be able to be used as an emote due to being over ' + maxKbyteEmote + 'KB'
+    ? ' and will not be able to be used as an emote due to being over ' + maxKbyteText + 'KB'
     : ''
   return sizeText + optionalText
 }

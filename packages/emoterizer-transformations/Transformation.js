@@ -5,6 +5,7 @@ import { zoomImageDefaultZoom, rollImageDefaultSpeed, genkiImageDefaultSpeed, im
 import { PseudoGif } from './PseudoGif.js'
 */
 const Jimptest = require('jimp')
+// @ts-ignore
 const Jimp = Jimptest.__esModule === true ? Jimptest.default : Jimptest
 const { GifFrame, GifUtil, GifCodec } = require('gifwrap')
 const {
@@ -48,7 +49,7 @@ class Transformation {
     const opt = (options == null) ? {} : options
     if (opt.quantization !== 'none') {
       console.log('qtizing')
-      GifUtil.quantizeWu(gif.frames)
+      GifUtil.quantizeWu(gif.frames, null)
     }
     let targetGif
     if (gif.buffer == null) {
@@ -101,7 +102,7 @@ class Transformation {
     const originalSpeed = gif.frames[0].delayCentisecs
     console.log(originalSpeed)
     GifUtil.quantizeSorokin(gif.frames, 256, 'top-pop')
-    const newGif = await new GifCodec().encodeGif(gif.frames)
+    const newGif = await new GifCodec().encodeGif(gif.frames, null)
     newGif.frames.forEach(frame => {
       frame.delayCentisecs = originalSpeed
     })

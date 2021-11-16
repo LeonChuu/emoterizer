@@ -8,12 +8,12 @@ const speedImageDefaultDelay = 2
 const gifwrapDefaultDelay = 8
 
 module.exports = {
-zoomImageDefaultZoom,
-rollImageDefaultSpeed,
-genkiImageDefaultSpeed,
-imageDefaultInterval,
-defaultWidth,
-defaultHeight,
-speedImageDefaultDelay,
-gifwrapDefaultDelay
+  zoomImageDefaultZoom,
+  rollImageDefaultSpeed,
+  genkiImageDefaultSpeed,
+  imageDefaultInterval,
+  defaultWidth,
+  defaultHeight,
+  speedImageDefaultDelay,
+  gifwrapDefaultDelay
 }

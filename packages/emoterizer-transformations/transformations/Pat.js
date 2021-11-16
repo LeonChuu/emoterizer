@@ -15,7 +15,7 @@ class Pat {
     const squishArg = parseInt(options.squish) || 0
     const offsetArg = parseInt(options.offset) || 0
     const delay = parseInt(options.delay) || gifwrapDefaultDelay
-    const toBlit = options.image.frames
+    const toBlit = options.auxImage.frames
 
     const squishVal = (Math.max(0, (100 - Math.abs(squishArg)) / 100.0))
     const yOffset = Math.max(0, Math.abs(offsetArg))

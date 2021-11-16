@@ -1,28 +1,28 @@
 
+import { Message, MessageEmbed } from 'discord.js'
+import { Gif } from 'gifwrap'
+import Embed from './Embed'
+import { helpText, helpTextCommands, getSizeText } from './UtilityText'
 const whitespaceRegex = /\s+/
 // .yv at the first position, help at the second.
 const commandPosition = 2
 
-const { helpText, helpTextCommands, getSizeText } = require('./UtilityText')
-
-const Embed = require('./Embed')
-
 // TODO pass the following URLS to a CONFIG FILE.
-const successThumbnail = process.env.SUCCESSTHUMBNAIL || 'https://cdn.discordapp.com/emojis/717325665795440680.png?v=1'
-const failureThumbnail = process.env.FAILURETHUMBNAIL || 'https://cdn.discordapp.com/emojis/717326285818560562.png?v=1'
+const successThumbnail = process.env.SUCCESSTHUMBNAIL ?? 'https://cdn.discordapp.com/emojis/717325665795440680.png?v=1'
+const failureThumbnail = process.env.FAILURETHUMBNAIL ?? 'https://cdn.discordapp.com/emojis/717326285818560562.png?v=1'
 
-const successEmbed = new Embed([0, 0, 255], successThumbnail)
-const failureEmbed = new Embed([255, 0, 0], failureThumbnail)
+const successEmbed = new Embed(successThumbnail, [0, 0, 255])
+const failureEmbed = new Embed(failureThumbnail, [255, 0, 0])
 
 // shortens message.channel.send.
-function send (message, embed) {
-  message.channel.send(embed)
+function send (message: Message, embed: MessageEmbed): void {
+  message.channel.send(embed).finally(() => {})
 }
 /**
  * Sends message with help text for commands.
  * @param {Discord.message} message
  */
-function sendHelpMessage (message) {
+export function sendHelpMessage (message: Message): void {
   const commandRequest = message.content.split(whitespaceRegex)[commandPosition]
   let helpResponse = helpText
   if (commandRequest != null) {
@@ -40,10 +40,10 @@ function sendHelpMessage (message) {
  * @param {Gif} gif - Gif to send.
  * @param {string} gifName - name of the gif file.
  */
-function sendTransformationMessage (message, gif, gifName) {
+export function sendTransformationMessage (message: Message, gif: Gif, gifName: string): void {
   const gifSize = gif.buffer.byteLength / 1024
-  const framesText = 'Frames: ' + gif.frames.length
-  const dimensionText = 'Dimensions: ' + gif.height + 'x' + gif.width
+  const framesText = 'Frames: ' + gif.frames.length.toString()
+  const dimensionText = 'Dimensions: ' + gif.height.toString() + 'x' + gif.width.toString()
 
   // TODO change the attachment name to something better
   send(message, successEmbed.generateEmbed('Gif generated!',
@@ -54,7 +54,7 @@ function sendTransformationMessage (message, gif, gifName) {
       attachment: gif.buffer,
       name: gifName + '.gif'
     }]
-  })
+  }).finally(() => {})
 }
 
 /**
@@ -62,7 +62,7 @@ function sendTransformationMessage (message, gif, gifName) {
  * @param {Discord.Message} message - Discord message to reply.
  * @param {string} errorText - error text.
  */
-function sendErrorMessage (message, errorText) {
+export function sendErrorMessage (message: Message, errorText: string): void {
   send(message, failureEmbed.generateEmbed('Failure', errorText))
 }
 

@@ -1,17 +1,20 @@
-const Discord = require('discord.js')
+import Discord = require('discord.js')
 
-class Embed {
+export default class Embed {
+  color: [number, number, number]
+  thumbnail: string
+
   /**
    *
    * @param {Integer[]} color
    * @param {string} thumbnail
    */
-  constructor (color = [255, 0, 255], thumbnail) {
+  constructor (thumbnail: string, color: [number, number, number] = [255, 0, 255]) {
     this.color = color
     this.thumbnail = thumbnail
   }
 
-  generateEmbed (fieldName, text, image) {
+  generateEmbed (fieldName: string, text: string, image?: string): Discord.MessageEmbed {
     const embed = new Discord.MessageEmbed()
     embed.addField(fieldName, text)
     embed.setColor(this.color)

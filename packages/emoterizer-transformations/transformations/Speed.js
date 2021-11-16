@@ -1,9 +1,9 @@
 const PseudoGif = require('../PseudoGif.js')
 class Speed {
   /**
-   * @param {PseudoGif|GifImage} gif image to be transformed.
+   * @param {PseudoGif} gif image to be transformed.
    * @param {Object} options  - optional parameters
-   * @returns {PseudoGif}  transformed image.
+   * @returns {Promise<PseudoGif>}  transformed image.
    */
   static async transform (gif, { delay }) {
     const delayInRange = (this.validateDelay(parseFloat(delay)) || 1) + 1

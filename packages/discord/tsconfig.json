@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "./target",
+    "allowJs": true,
+    "target": "es5",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "skipLibCheck": true
+  },
+  "include": ["./src/**/*", "./bot.ts"]
+}
