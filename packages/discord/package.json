@@ -13,7 +13,9 @@
   "devDependencies": {
     "@types/ws": "^8.2.0"
   },
-  "scripts": {},
+  "scripts": {
+		"build": "tsc && cp -r resources target"
+	},
   "eslintConfig": {},
   "browserslist": {
     "production": [
