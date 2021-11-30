@@ -24,7 +24,7 @@ class Shake {
 
     for (let i = 0; i < maxFrames; i++) {
       const currentMovement = movement[i % movement.length]
-      const frame = GifUtil.copyAsJimp(Jimp, gif.frames[i % gifLength])
+      const frame = GifUtil.copyAsJimp(Jimp, gif.frames[i % gifLength].bitmap)
 
       frame.contain(width + 2 * intensity, height + 2 * intensity)
 

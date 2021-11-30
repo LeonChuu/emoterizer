@@ -2,6 +2,7 @@
 import { ImageData } from '../image/ImageData'
 import { PseudoGif } from 'emoterizer-transformations'
 import { GifFrame, BitmapImage, GifCodec, Gif } from 'gifwrap'
+import { TransformationArguments } from '../image/ImageUtils'
 import Discord = require('discord.js')
 import { MessageAttachment } from 'discord.js'
 import got from 'got'
@@ -15,13 +16,14 @@ const discordEmojiURL = 'https://cdn.discordapp.com/emojis/'
 
 const codec = new GifCodec()
 
-interface Arguments {
+interface Arguments extends TransformationArguments {
   prefixed: boolean
   command: string
   remainingArg: string | undefined
   content: Record<string, string>
   auxImage: Gif| undefined
 }
+
 
 /**
  * Parses a bot command.
@@ -37,13 +39,13 @@ export function parseInput (inputLine: string): Arguments {
     content: {},
     auxImage: undefined
   }
-
+  console.log(splitString)
   if (splitString.length < 1) {
     throw new Error('No arguments found.')
   }
 
   args.prefixed = (splitString[0] === prefix)
-  if (args.prefixed) {
+  if (!args.prefixed) {
     return args
   }
 
@@ -116,6 +118,7 @@ async function decodeEmojiInAttachment (attachment: MessageAttachment): Promise<
  */
 export async function getImage (message: Discord.Message, args: Arguments): Promise<ImageData> {
   const attachment = message.attachments.first()
+  console.log(args)
   if (attachment !== undefined) {
     return await decodeEmojiInAttachment(attachment)
   } else if ((args.remainingArg != null) && (args.remainingArg.search(emojiRE) >= 0)) {
@@ -129,4 +132,3 @@ export async function getImage (message: Discord.Message, args: Arguments): Prom
     throw new ReferenceError('No image was found')
   }
 }
-module.exports = { getImage, parseInput, prefix }

@@ -12,7 +12,7 @@ class Rotate {
     const length = gif.frames.length
     const frameList = []
     for (let i = 0, frameIndex = 0; Math.abs(i) < rotationLimit; i += step, frameIndex = (frameIndex + 1) % length) {
-      const image = GifUtil.copyAsJimp(Jimp, gif.frames[frameIndex])
+      const image = GifUtil.copyAsJimp(Jimp, gif.frames[frameIndex].bitmap)
       //    GifUtil.quantizeDekker(imageOrImages, maxColorIndexes, dither)
       image.rotate(i, false)
       const fCopied = new GifFrame(new BitmapImage(image.bitmap))

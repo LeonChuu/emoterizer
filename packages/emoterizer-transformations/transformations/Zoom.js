@@ -25,11 +25,10 @@ class Zoom {
   }
 
   static zoom (frame, verticalDist, horizontalDist) {
-    const image = GifUtil.copyAsJimp(Jimp, frame)
-    const width = image.bitmap.width
-    const height = image.bitmap.height
+    const width = frame.bitmap.width
+    const height = frame.bitmap.height
 
-    const reframedImage = GifUtil.copyAsJimp(Jimp, new BitmapImage(image.bitmap)
+    const reframedImage = GifUtil.copyAsJimp(Jimp, new BitmapImage(frame.bitmap)
       .reframe(horizontalDist, verticalDist, width - horizontalDist * 2, height - verticalDist * 2, 0))
     reframedImage.contain(height, width)
     return reframedImage

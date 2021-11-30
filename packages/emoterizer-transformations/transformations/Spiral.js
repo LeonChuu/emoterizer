@@ -18,7 +18,7 @@ class Spiral {
     const outputFrameList = []
     for (let i = 0, frameIndex = 0, position = 10; (i < 480) && (position < (width / 2)) &&
     (position < (height / 2)); i += 360 / step, position += zoom, frameIndex = (frameIndex + 1) % length) {
-      const image = GifUtil.copyAsJimp(Jimp, gif.frames[frameIndex])
+      const image = GifUtil.copyAsJimp(Jimp, gif.frames[frameIndex].bitmap)
       image.rotate(i, false)
       reframedImage = GifUtil.copyAsJimp(Jimp, new BitmapImage(image.bitmap)
         .reframe(position, position, width - position * 2, height - position * 2))

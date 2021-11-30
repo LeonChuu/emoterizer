@@ -43,5 +43,3 @@ export function getSizeText (size: number): string {
     : ''
   return sizeText + optionalText
 }
-
-module.exports = { helpText, getSizeText, helpTextCommands }

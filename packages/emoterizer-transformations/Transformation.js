@@ -48,7 +48,6 @@ class Transformation {
   static async createGifBlob (gif, options) {
     const opt = (options == null) ? {} : options
     if (opt.quantization !== 'none') {
-      console.log('qtizing')
       GifUtil.quantizeWu(gif.frames, null)
     }
     let targetGif
@@ -73,7 +72,6 @@ class Transformation {
     console.log(values)
     if (transformationType != null) {
       const newFrameList = await Transformation.transform(image, transformationType, values)
-      console.log('qtize')
       if (transformationType === 'speed') {
         // as only speed will be adjusted, quantization is unnecessary
         newImage = await Transformation.createGifBlob(newFrameList, { quantization: 'none' })

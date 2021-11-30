@@ -65,5 +65,3 @@ export function sendTransformationMessage (message: Message, gif: Gif, gifName: 
 export function sendErrorMessage (message: Message, errorText: string): void {
   send(message, failureEmbed.generateEmbed('Failure', errorText))
 }
-
-module.exports = { sendHelpMessage, sendTransformationMessage, sendErrorMessage }

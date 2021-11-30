@@ -10,7 +10,7 @@ class Pat {
     const height = gif.height
     const width = gif.width
     const length = gif.frames.length
-    const inputFrameList = gif.frames.map(frame => GifUtil.copyAsJimp(Jimp, frame))
+    const inputFrameList = gif.frames.map(frame => GifUtil.copyAsJimp(Jimp, frame.bitmap))
 
     const squishArg = parseInt(options.squish) || 0
     const offsetArg = parseInt(options.offset) || 0
@@ -31,12 +31,12 @@ class Pat {
       const original = background.clone().composite(newFrame,
         (width * (1 - squish[0])) / 2, squishHeightOffset).clone()
 
-      return new GifFrame(new BitmapImage(original.composite(GifUtil.copyAsJimp(Jimp, frame), 0, handHeightOffset).bitmap))
+      return new GifFrame(new BitmapImage(original.composite(GifUtil.copyAsJimp(Jimp, frame.bitmap), 0, handHeightOffset).bitmap))
     })
     let outputGif = new PseudoGif(outputFrameList, gif.height, gif.width)
 
     if (delay !== gifwrapDefaultDelay) {
-      outputGif = Speed.transform(outputGif, { delay })
+      outputGif = await Speed.transform(outputGif, { delay })
     }
     return outputGif
   }

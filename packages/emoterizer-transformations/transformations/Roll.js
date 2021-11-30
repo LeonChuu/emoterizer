@@ -26,7 +26,7 @@ class Roll {
 
     // const originalJimp = gif.frames.map(frame => GifUtil.copyAsJimp(Jimp, frame))
     for (let i = 0, j = 0, frameIndex = 0; (Math.abs(i) < newWidth); i += shift, j += step, frameIndex = (frameIndex + 1) % length) {
-      const original = GifUtil.copyAsJimp(Jimp, gif.frames[frameIndex]).rotate(j, false)
+      const original = GifUtil.copyAsJimp(Jimp, gif.frames[frameIndex].bitmap).rotate(j, false)
       const originalResized = new GifFrame(original.bitmap).reframe(-width, 0, newWidth, height, 0x00000000)
       const newImageAux = GifUtil.shareAsJimp(Jimp, originalResized)
       const newImage = GifUtil.copyAsJimp(Jimp, originalResized)

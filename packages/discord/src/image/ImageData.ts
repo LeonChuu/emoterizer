@@ -9,5 +9,3 @@ export class ImageData {
     this.name = name
   }
 }
-
-module.exports = ImageData

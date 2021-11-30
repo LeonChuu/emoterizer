@@ -19,7 +19,7 @@ class Flip {
 
     const frameList = gif.frames.map(frame => new GifFrame(
       new BitmapImage(
-        GifUtil.copyAsJimp(Jimp, frame).flip(horizontal, vertical).bitmap)))
+        GifUtil.copyAsJimp(Jimp, frame.bitmap).flip(horizontal, vertical).bitmap)))
     return new PseudoGif(frameList, gif.height, gif.width)
   }
 }

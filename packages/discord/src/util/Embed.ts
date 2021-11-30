@@ -26,5 +26,3 @@ export default class Embed {
     return embed
   }
 }
-
-module.exports = Embed
