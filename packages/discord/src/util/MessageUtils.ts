@@ -1,8 +1,8 @@
 
 import { Message, MessageEmbed } from 'discord.js'
 import { Gif } from 'gifwrap'
-import Embed from './Embed'
-import { helpText, helpTextCommands, getSizeText } from './UtilityText'
+import Embed from './Embed.js'
+import { helpText, helpTextCommands, getSizeText } from './UtilityText.js'
 const whitespaceRegex = /\s+/
 // .yv at the first position, help at the second.
 const commandPosition = 2

@@ -1,5 +1,4 @@
-import Discord = require('discord.js')
-
+import { MessageEmbed } from 'discord.js'
 export default class Embed {
   color: [number, number, number]
   thumbnail: string
@@ -14,8 +13,8 @@ export default class Embed {
     this.thumbnail = thumbnail
   }
 
-  generateEmbed (fieldName: string, text: string, image?: string): Discord.MessageEmbed {
-    const embed = new Discord.MessageEmbed()
+  generateEmbed (fieldName: string, text: string, image?: string): MessageEmbed {
+    const embed = new MessageEmbed()
     embed.addField(fieldName, text)
     embed.setColor(this.color)
     embed.setThumbnail(this.thumbnail)

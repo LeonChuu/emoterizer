@@ -1,12 +1,11 @@
 
-import { ImageData } from '../image/ImageData'
+import { ImageData } from '../image/ImageData.js'
 import { PseudoGif } from 'emoterizer-transformations'
 import { GifFrame, BitmapImage, GifCodec, Gif } from 'gifwrap'
-import { TransformationArguments } from '../image/ImageUtils'
-import Discord = require('discord.js')
-import { MessageAttachment } from 'discord.js'
+import { TransformationArguments } from '../image/ImageUtils.js'
+import { MessageAttachment, Message } from 'discord.js'
 import got from 'got'
-import Jimp = require('jimp')
+import Jimp from 'jimp'
 
 export const prefix = process.env.EMOTERIZER_PREFIX ?? '.yv'
 const whitespaceRegex = /\s+/
@@ -16,7 +15,7 @@ const discordEmojiURL = 'https://cdn.discordapp.com/emojis/'
 
 const codec = new GifCodec()
 
-interface Arguments extends TransformationArguments {
+interface MessageArguments extends TransformationArguments {
   prefixed: boolean
   command: string
   remainingArg: string | undefined
@@ -24,15 +23,14 @@ interface Arguments extends TransformationArguments {
   auxImage: Gif| undefined
 }
 
-
 /**
  * Parses a bot command.
  * @param {string} inputLine - discord message text.
- * @returns {Arguments} - Key-value pairs of property and value, with the remaining arg under key remainingArg.
+ * @returns {MessageArguments} - Key-value pairs of property and value, with the remaining arg under key remainingArg.
  */
-export function parseInput (inputLine: string): Arguments {
+export function parseInput (inputLine: string): MessageArguments {
   const splitString = inputLine.split(whitespaceRegex)
-  const args: Arguments = {
+  const args: MessageArguments = {
     prefixed: false,
     command: '',
     remainingArg: undefined,
@@ -116,7 +114,7 @@ async function decodeEmojiInAttachment (attachment: MessageAttachment): Promise<
  * @param {object} args - parsed message arguments.
  * @returns {ImageData}
  */
-export async function getImage (message: Discord.Message, args: Arguments): Promise<ImageData> {
+export async function getImage (message: Message, args: MessageArguments): Promise<ImageData> {
   const attachment = message.attachments.first()
   console.log(args)
   if (attachment !== undefined) {

@@ -1,13 +1,16 @@
 
 import { Transformation, PseudoGif } from 'emoterizer-transformations'
-import { Gif } from 'gifwrap'
-import { ImageData } from './ImageData'
-
+import { Gif, GifUtil } from 'gifwrap'
+import { ImageData } from './ImageData.js'
+import path from 'path'
 export interface TransformationArguments {
   command: string
   content: Record<string, string>
   auxImage: Gif | undefined
 }
+
+const pat = GifUtil.read(path.resolve(__dirname, '../../resources/pat.gif'))
+const santa = GifUtil.read(path.resolve(__dirname, '../../resources/santa.gif'))
 
 /**
  * Executes transformations over an image.
@@ -35,15 +38,22 @@ async function transformImage (image: PseudoGif, args: TransformationArguments):
  */
 async function transform (sourceImage: PseudoGif, args: TransformationArguments): Promise<PseudoGif> {
   const command = args.command
+  let auxImage = args.auxImage
+  if (auxImage == null) {
+    auxImage = await pat
+  }
   const argument: Record<string, string | Gif | undefined> = {
     ...args.content,
-    auxImage: args.auxImage
+    auxImage
   }
   switch (command) {
     case 'fliphorizontal':
       return Transformation.transform(sourceImage, 'flip', { direction: 'horizontal' })
     case 'flipvertical':
       return Transformation.transform(sourceImage, 'flip', { direction: 'vertical' })
+    case 'santa':
+      argument.auxImage = await santa
+      return Transformation.transform(sourceImage, 'pat', argument)
     default:
       return Transformation.transform(sourceImage, command, argument)
   }

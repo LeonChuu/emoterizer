@@ -13,25 +13,40 @@ class Pat {
     const inputFrameList = gif.frames.map(frame => GifUtil.copyAsJimp(Jimp, frame.bitmap))
 
     const squishArg = parseInt(options.squish) || 0
-    const offsetArg = parseInt(options.offset) || 0
+    const argOffsety = parseInt(options.offsety || 0)
+    const argOffsetx = parseInt(options.offsetx || 0)
+    let argSquishOffsetx = 0
+    let argSquishOffsety = 0
+    let argHandOffsetx = 0
+    let argHandOffsety = 0
+
+    if (options.relative === 'main') {
+      argSquishOffsetx = argOffsetx
+      argSquishOffsety = argOffsety
+    } else {
+      argHandOffsetx = argOffsetx
+      argHandOffsety = argOffsety
+    }
+
     const delay = parseInt(options.delay) || gifwrapDefaultDelay
     const toBlit = options.auxImage.frames
 
     const squishVal = (Math.max(0, (100 - Math.abs(squishArg)) / 100.0))
-    const yOffset = Math.max(0, Math.abs(offsetArg))
     const squishFactor = [[1.0, 1.0], [1.1 / squishVal, 0.90 * squishVal], [1.2 / squishVal, 0.85 * squishVal], [1.1 / squishVal, 0.93 * squishVal]]
     const background = GifUtil.copyAsJimp(Jimp, new BitmapImage(height, width, 0))
 
     const outputFrameList = toBlit.map((frame, index) => {
       const squish = squishFactor[index]
       const newFrame = inputFrameList[index % length].resize(width * squish[0], height * squish[1])
-      const squishHeightOffset = height * (1 - squish[1]) + yOffset
-      const handHeightOffset = height * (0.9 - squish[1])
+      const squishOffsety = height * (1 - squish[1]) + argSquishOffsety
+      const squishOffsetx = ((width * (1 - squish[0])) / 2) + argSquishOffsetx
+      const handOffsety = height * (0.9 - squish[1]) + argHandOffsety
+      const handOffsetx = argHandOffsetx
 
       const original = background.clone().composite(newFrame,
-        (width * (1 - squish[0])) / 2, squishHeightOffset).clone()
+        squishOffsetx, squishOffsety).clone()
 
-      return new GifFrame(new BitmapImage(original.composite(GifUtil.copyAsJimp(Jimp, frame.bitmap), 0, handHeightOffset).bitmap))
+      return new GifFrame(new BitmapImage(original.composite(GifUtil.copyAsJimp(Jimp, frame.bitmap), handOffsetx, handOffsety).bitmap))
     })
     let outputGif = new PseudoGif(outputFrameList, gif.height, gif.width)
 

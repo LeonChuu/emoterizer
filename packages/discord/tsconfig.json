@@ -2,10 +2,11 @@
   "compilerOptions": {
     "outDir": "./target",
     "allowJs": true,
-    "target": "es5",
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "noImplicitThis": true
+    "noImplicitThis": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
   },
   "include": ["./src/**/*", "./bot.ts"]
 }

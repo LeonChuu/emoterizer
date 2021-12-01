@@ -8,7 +8,9 @@
     "got": "11.8.2",
     "jimp": "^0.16.1"
   },
-  "scripts": {},
+  "scripts": {
+		"build": "./generate_layer.sh"
+	},
   "eslintConfig": {},
   "browserslist": {
     "production": [

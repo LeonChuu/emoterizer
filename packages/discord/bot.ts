@@ -1,18 +1,14 @@
-import Discord = require('discord.js')
-import { Message } from 'discord.js'
-import path = require('path')
-import { GifUtil } from 'gifwrap'
-import { generateTransformedGif } from './src/image/ImageUtils'
-import { parseInput, getImage, prefix } from './src/util/DecodingUtils'
-import { sendHelpMessage, sendTransformationMessage, sendErrorMessage } from './src/util/MessageUtils'
+import { Message, Client } from 'discord.js'
+import { generateTransformedGif } from './src/image/ImageUtils.js'
+import { parseInput, getImage, prefix } from './src/util/DecodingUtils.js'
+import { sendHelpMessage, sendTransformationMessage, sendErrorMessage } from './src/util/MessageUtils.js'
 
 const defaultTimeout = 4000
 const activeUsers: Record<string, boolean| null> = {}
 const token = process.env.TOKEN
-const client = new Discord.Client()
+const client = new Client()
 
-const pat = GifUtil.read(path.resolve(__dirname, './resources/pat.gif'))
-client.login(token).catch(reason => {
+client.login(token).catch(() => {
   console.log('ERROR! LOGIN FAILED')
   process.exit(1)
 })
@@ -29,7 +25,6 @@ const asyncFunc: (message: Message) => void = async (message) => {
       sendErrorMessage(message, 'Wait a few seconds before repeating your request.')
       return
     }
-    args.auxImage = await pat
     let generatedGif
     switch (args.command) {
       case 'help':
