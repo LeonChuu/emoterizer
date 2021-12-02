@@ -14,7 +14,8 @@
     "@types/ws": "^8.2.0"
   },
   "scripts": {
-		"build": "tsc && cp -r resources target"
+		"build": "tsc && cp -r resources target",
+    "start": "node ./target/bot.js"
 	},
   "eslintConfig": {},
   "browserslist": {

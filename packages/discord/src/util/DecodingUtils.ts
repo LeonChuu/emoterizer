@@ -37,7 +37,6 @@ export function parseInput (inputLine: string): MessageArguments {
     content: {},
     auxImage: undefined
   }
-  console.log(splitString)
   if (splitString.length < 1) {
     throw new Error('No arguments found.')
   }
@@ -73,7 +72,6 @@ async function decodeEmojiInArgument (emoji: string[]): Promise<ImageData> {
   const outputName = emoji[1]
   const emojiURLPNG = discordEmojiURL + emojiNumber + '.png'
   const emojiURLGIF = discordEmojiURL + emojiNumber + '.gif'
-  console.log(emojiURLPNG)
   try {
     image = await codec.decodeGif(Buffer.from((await got(emojiURLPNG)).rawBody.buffer))
   } catch {
@@ -84,7 +82,6 @@ async function decodeEmojiInArgument (emoji: string[]): Promise<ImageData> {
       image = new PseudoGif([new GifFrame(new BitmapImage(jimpImage.bitmap))], jimpImage.getHeight(), jimpImage.getWidth())
     }
   }
-  console.log(image)
 
   return new ImageData(image, outputName)
 }
@@ -116,7 +113,6 @@ async function decodeEmojiInAttachment (attachment: MessageAttachment): Promise<
  */
 export async function getImage (message: Message, args: MessageArguments): Promise<ImageData> {
   const attachment = message.attachments.first()
-  console.log(args)
   if (attachment !== undefined) {
     return await decodeEmojiInAttachment(attachment)
   } else if ((args.remainingArg != null) && (args.remainingArg.search(emojiRE) >= 0)) {

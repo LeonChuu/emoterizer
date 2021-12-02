@@ -1,0 +1,46 @@
+{
+  "flipvertical": {
+    "text": "Flips a image vertically. \n ",
+    "thumbnailURL":"https://cdn.discordapp.com/attachments/259511598605926401/915811697250435082/flipverticaluipuff.gif"
+  },
+  "fliphorizontal":{
+    "text": "Flips a image horizontally. \n ",
+    "thumbnailURL":"https://cdn.discordapp.com/attachments/259511598605926401/915811674244673566/fliphorizontaluipuff.gif"
+  },
+  "genki":{
+    "text": "Applies a sliding effect to an image.\n Options:\n interval - empty space between frames in pixels.\n speed - sliding speed. ",
+    "thumbnailURL": "https://media.discordapp.net/attachments/259511598605926401/915811818344173619/genkiuipuff.gif"
+  },
+  "pat": {
+    "text": "Headpats an image.\n Options:\n squish (0 to 100)\n offsetx (positive or negative value)\n offsety (positive or negative value)\n relative main (applies offset to image instead of hand)\n",
+    "thumbnailURL": "https://cdn.discordapp.com/attachments/259511598605926401/915811941971279962/patuipuff.gif"
+  },
+  "roll": {
+    "text": "Applies a rolling effect.\n Options:\n rotationspeed\n speed\n",
+    "thumbnailURL": "https://cdn.discordapp.com/attachments/259511598605926401/915811747544334376/rolluipuff.gif" 
+  }, 
+  "rotate": {
+    "text": "Applies a rotating effect.\n Options:\n rotationspeed\n",
+    "thumbnailURL": "https://cdn.discordapp.com/attachments/259511598605926401/915811899113881620/spiraluipuff.gif"
+  },
+  "santa": {
+    "text": "Places a santa hat over the image. Uses same options as pat.",
+    "thumbnailURL": "https://cdn.discordapp.com/attachments/259511598605926401/915811997944279130/santauipuff.gif"
+  },
+  "shake":{
+    "text": "Applies a shaking effect.\n Options:\n delay ( 1 to 100) - delay between frames in centisecs. \n intensity (1 to 124) - shaking intensity",
+    "thumbnailURL": "https://cdn.discordapp.com/attachments/259511598605926401/915811866951954442/shakeuipuff.gif"
+  },
+  "speed": {
+    "text": "Speeds up a gif.\n Options:\n delay ( 1 to 100) - delay between frames in centisecs.",
+    "thumbnailURL": "https://cdn.discordapp.com/attachments/259511598605926401/915815929957457990/speedpatuipuff.gif.gif"
+  },
+  "spiral": {
+    "text": "Applies a spiral effect to an image.\n Options:\n rotationspeed\n zoom",
+    "thumbnailURL": "https://cdn.discordapp.com/attachments/259511598605926401/915811899113881620/spiraluipuff.gif"
+  },
+  "zoom": {
+    "text": "Applies a zooming effect to an image.\n Options:\n zoom - zooming power/speed",
+    "thumbnailURL": "https://cdn.discordapp.com/attachments/259511598605926401/915811916809662484/zoomuipuff.gif"
+  }
+}

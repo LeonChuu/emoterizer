@@ -7,6 +7,7 @@
     "noImplicitThis": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "resolveJsonModule": true
   },
   "include": ["./src/**/*", "./bot.ts"]
 }

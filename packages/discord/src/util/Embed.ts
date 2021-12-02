@@ -1,26 +1,31 @@
 import { MessageEmbed } from 'discord.js'
 export default class Embed {
   color: [number, number, number]
-  thumbnail: string
+  defaultThumbnail: string
 
   /**
    *
    * @param {Integer[]} color
-   * @param {string} thumbnail
+   * @param {string} defaultThumbnail
    */
-  constructor (thumbnail: string, color: [number, number, number] = [255, 0, 255]) {
+  constructor (defaultThumbnail: string, color: [number, number, number] = [255, 0, 255]) {
     this.color = color
-    this.thumbnail = thumbnail
+    this.defaultThumbnail = defaultThumbnail
   }
 
-  generateEmbed (fieldName: string, text: string, image?: string): MessageEmbed {
+  generateEmbed (fieldName: string, text: string, image?: string, thumbnailURL?: string): MessageEmbed {
     const embed = new MessageEmbed()
     embed.addField(fieldName, text)
     embed.setColor(this.color)
-    embed.setThumbnail(this.thumbnail)
+    let thumbnail = this.defaultThumbnail
+
+    if (thumbnailURL != null) {
+      thumbnail = thumbnailURL
+    }
+
+    embed.setThumbnail(thumbnail)
     if (image != null) {
       embed.setImage(image)
-      console.log(image)
     }
     return embed
   }

@@ -36,14 +36,19 @@ const asyncFunc: (message: Message) => void = async (message) => {
           generatedGif = await generateTransformedGif(imageData, args)
         } catch (ex) {
           let errorMessage = ex.message
-          if (ex.name === ReferenceError.name) {
+
+          if (ex instanceof ReferenceError) {
             if (args.remainingArg != null) {
               errorMessage = 'Last argument should be a custom emote, but found ' + args.remainingArg + '\n' +
               'type \'' + prefix + ' help\' for help!'
             }
+          } else if (ex instanceof TypeError) {
+            errorMessage = 'Transformation ' + args.command + ' not found.'
+          } else {
+            console.error(ex)
+            console.error('Command: ' + args.command)
           }
-          console.error(ex)
-          console.error('Command: ' + args.command)
+
           sendErrorMessage(message, errorMessage)
           return
         }

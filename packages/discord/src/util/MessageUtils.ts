@@ -2,17 +2,25 @@
 import { Message, MessageEmbed } from 'discord.js'
 import { Gif } from 'gifwrap'
 import Embed from './Embed.js'
-import { helpText, helpTextCommands, getSizeText } from './UtilityText.js'
+import { getSizeText, helpText } from './UtilityText.js'
+import helpTextCommandJSON from '../../resources/helptext.json'
+import thumbnailURLS from '../../resources/urls.json'
+interface HelpText {
+  [key: string]:
+  {
+    text: string
+    thumbnailURL: string | undefined
+  }
+}
+
+const helpTextCommands = (helpTextCommandJSON as HelpText)
+
 const whitespaceRegex = /\s+/
 // .yv at the first position, help at the second.
 const commandPosition = 2
 
-// TODO pass the following URLS to a CONFIG FILE.
-const successThumbnail = process.env.SUCCESSTHUMBNAIL ?? 'https://cdn.discordapp.com/emojis/717325665795440680.png?v=1'
-const failureThumbnail = process.env.FAILURETHUMBNAIL ?? 'https://cdn.discordapp.com/emojis/717326285818560562.png?v=1'
-
-const successEmbed = new Embed(successThumbnail, [0, 0, 255])
-const failureEmbed = new Embed(failureThumbnail, [255, 0, 0])
+const successEmbed = new Embed(thumbnailURLS.successThumbnailURL, [0, 0, 255])
+const failureEmbed = new Embed(thumbnailURLS.failureThumbnailURL, [255, 0, 0])
 
 // shortens message.channel.send.
 function send (message: Message, embed: MessageEmbed): void {
@@ -24,14 +32,16 @@ function send (message: Message, embed: MessageEmbed): void {
  */
 export function sendHelpMessage (message: Message): void {
   const commandRequest = message.content.split(whitespaceRegex)[commandPosition]
-  let helpResponse = helpText
-  if (commandRequest != null) {
-    helpResponse = helpTextCommands[commandRequest]
-    if (helpResponse == null) {
-      helpResponse = 'Subcommand not found.'
-    }
+  const helpResponse = helpTextCommands[commandRequest]
+  let responseEmbed
+  if (commandRequest == null) {
+    responseEmbed = successEmbed.generateEmbed('Help', helpText)
+  } else if (helpResponse == null) {
+    responseEmbed = successEmbed.generateEmbed('Help', 'subcommand not found.')
+  } else {
+    responseEmbed = successEmbed.generateEmbed('Help', helpResponse.text, undefined, helpResponse.thumbnailURL)
   }
-  send(message, successEmbed.generateEmbed('Help', helpResponse))
+  send(message, responseEmbed)
 }
 
 /**
