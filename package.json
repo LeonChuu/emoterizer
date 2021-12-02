@@ -1,13 +1,15 @@
 {
   "name": "giffer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start-discord": "react-scripts start",
+    "build-react": "react-scripts build",
+    "build-discord": "cd packages/discord && npm run build",
+    "start-discord": "cd packages/discord && npm run start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

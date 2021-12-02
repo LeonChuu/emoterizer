@@ -2,6 +2,8 @@ version: "3.9"
 services:
   emoterizer-discord:
     image: "emoterizer-discord"
+    build: .
+    container_name: "emoterizer-discord"
     environment:
       - "TOKEN=${TOKEN}"
       - "EMOTERIZER_PREFIX=.yvt"
