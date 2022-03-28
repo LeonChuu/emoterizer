@@ -6,13 +6,13 @@
     "packages/*"
   ],
   "scripts": {
-    "start-discord": "react-scripts start",
-    "build-react": "react-scripts build",
-    "build-discord": "cd packages/discord && npm run build",
+    "start-frontend": "cd packages/front-end && npm run start",
+    "build-frontend": "cd packages/front-end && npm run build",
     "start-discord": "cd packages/discord && npm run start",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
+    "build-discord": "cd packages/discord && npm run build",
+    "build": "(cd packages/discord && npm run build);  (cd packages/frontend && npm run build)",
+    "postinstall": "(cd packages/discord && npm run build);  (cd packages/frontend && npm run build)"
+},
   "eslintConfig": {
     "extends": [
       "react-app",
